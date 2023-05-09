@@ -1,0 +1,45 @@
+{
+  "name": "electron-wrapper",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=v16.13",
+    "npm": ">=8.1"
+  },
+  "main": "layers/main/dist/index.cjs",
+  "scripts": {
+    "dev": "node scripts/watch.js",
+    "build": "npm run build:main && npm run build:preload",
+    "build:main": "cd ./layers/main && vite build",
+    "build:preload": "cd ./layers/preload && vite build",
+    "build:preload:types": "dts-cb -i \"layers/preload/tsconfig.json\" -o \"layers/preload/exposedInMainWorld.d.ts\"",
+    "compile": "cross-env MODE=production npm run build && electron-builder build --config .electron-builder.config.js --dir --config.asar=false",
+    "watch": "node scripts/watch.js",
+    "lint": "eslint . --ext js,ts",
+    "typecheck:main": "tsc --noEmit -p layers/main/tsconfig.json",
+    "typecheck:preload": "tsc --noEmit -p layers/preload/tsconfig.json",
+    "typecheck": "npm run typecheck:main && npm run typecheck:preload"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "cross-env": "^7.0.3",
+    "dts-for-context-bridge": "^0.7.1",
+    "electron": "24.2.0",
+    "electron-builder": "^23.6.0",
+    "eslint": "^8.39.0",
+    "typescript": "^5.0.4",
+    "vite": "^2.9.15"
+  },
+  "dependencies": {
+    "electron-updater": "5.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "config": "*",
+    "tsconfig": "*"
+  },
+  "workspaces": {
+    "nohoist": [
+      "**electron**"
+    ]
+  }
+}
