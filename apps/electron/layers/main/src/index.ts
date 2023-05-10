@@ -1,6 +1,8 @@
 import { app } from "electron";
-import "@main/security-restrictions";
 import restoreOrCreateWindow from "@main/mainWindow";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import prepareNext from "electron-next";
+import path from "path";
 
 /**
  * Prevent multiple instances
@@ -31,13 +33,26 @@ app.on("window-all-closed", () => {
  */
 app.on("activate", restoreOrCreateWindow);
 
+const dir = path.join(__dirname, "../../../../web");
+console.log(`dirname is ${dir}`);
+
+app.on("ready", async () => {
+  await prepareNext(dir);
+  try {
+    restoreOrCreateWindow();
+  } catch (e) {
+    console.log("Failed create window:", e);
+  }
+});
+
 /**
  * Create app window when background process will be ready
- */
+ 
 app
   .whenReady()
   .then(restoreOrCreateWindow)
   .catch((e) => console.error("Failed create window:", e));
+  */
 
 /**
  * Install Vue.js or some other devtools in development mode only

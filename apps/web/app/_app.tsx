@@ -13,6 +13,8 @@ const SafeAppContents = ({ Component, pageProps }: AppProps) => {
   }
 
   // Lock out users on old versions
+  console.log('yerba version');
+  console.log(window.yerba.version);
   if (window?.yerba?.version < 0.1) {
     return <div>Please update your app</div>;
   }

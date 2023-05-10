@@ -30,7 +30,7 @@ const config = {
     rollupOptions: {
       external: [
         "electron",
-        "electron-devtools-installer",
+        "electron-next",
         ...builtinModules.flatMap((p) => [p, `node:${p}`]),
       ],
       output: {

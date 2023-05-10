@@ -1,5 +1,6 @@
 import { BrowserWindow } from "electron";
 import { join } from "path";
+import { format } from "url";
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
@@ -32,7 +33,11 @@ async function createWindow() {
   const pageUrl =
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
-      : "https:/google.com";
+      : format({
+          pathname: join(__dirname, "../../../../web/out/index.html"),
+          protocol: "file:",
+          slashes: true,
+        });
 
   await browserWindow.loadURL(pageUrl);
 
