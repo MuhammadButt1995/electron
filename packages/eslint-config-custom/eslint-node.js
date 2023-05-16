@@ -19,6 +19,7 @@ module.exports = {
     'linebreak-style': 'off',
     'no-console': 'off',
     'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'warn',
     'import/no-extraneous-dependencies': 'off',
   },
 };

@@ -1,3 +1,3 @@
 interface Window {
-    readonly yerba: { version: number; };
+    readonly app: { version: number; };
 }

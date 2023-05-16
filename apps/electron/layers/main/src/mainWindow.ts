@@ -1,13 +1,12 @@
-import { BrowserWindow } from "electron";
-import { join } from "path";
-import { format } from "url";
+import { app, BrowserWindow } from 'electron';
+import { join } from 'path';
+import { format } from 'url';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
     show: false, // Use 'ready-to-show' event to show window
     webPreferences: {
-      webviewTag: false, // The webview tag is not recommended. Consider alternatives like iframe or Electron's BrowserView. https://www.electronjs.org/docs/latest/api/webview-tag#warning
-      preload: join(__dirname, "../../preload/dist/index.cjs"),
+      preload: join(__dirname, '../../preload/dist/index.cjs'),
     },
   });
 
@@ -17,7 +16,7 @@ async function createWindow() {
    *
    * @see https://github.com/electron/electron/issues/25012
    */
-  browserWindow.on("ready-to-show", () => {
+  browserWindow.on('ready-to-show', () => {
     browserWindow?.show();
 
     if (import.meta.env.DEV) {
@@ -34,8 +33,8 @@ async function createWindow() {
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
       : format({
-          pathname: join(__dirname, "../../../../web/out/index.html"),
-          protocol: "file:",
+          pathname: join(app.getAppPath(), '..', 'web', 'out', 'index.html'),
+          protocol: 'file:',
           slashes: true,
         });
 

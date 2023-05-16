@@ -1,15 +1,15 @@
 'use client';
 
-import useMounted from './hooks/useMounted';
+import useMounted from '@hooks/useMounted';
 
 const Page = () => {
   const { mounted } = useMounted();
   return (
     <>
-      <div className="bg-red-400">pawwge</div>
+      <div className='p-4 text-2xl'>Hello World</div>
       <div>
-        <span className="font-bold">{'Yerba version: '}</span>
-        {mounted && window.yerba.version}
+        <span className='font-bold'>{'App version: '}</span>
+        {mounted && window.app.version}
       </div>
     </>
   );

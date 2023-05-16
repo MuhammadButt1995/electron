@@ -6,6 +6,6 @@
       "@preload/*": ["./layers/preload/src/*"]
     }
   },
-  "include": ["layers/**/*.ts", "types/**/*.d.ts"],
+  "include": ["layers/**/*.ts", "types/**/*.d.ts", "layers/main/src/worker.js"],
   "exclude": ["node_modules", "layers/**/*.spec.ts", "layers/**/*.test.ts"]
 }

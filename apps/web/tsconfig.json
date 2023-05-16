@@ -10,6 +10,12 @@
   ],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@components/*": ["./app/components/*"],
+      "@providers/*": ["./app/components/providers/*"],
+      "@lib/*": ["./app/lib/*"],
+      "@hooks/*": ["./app/hooks/*"]
+    }
   }
 }

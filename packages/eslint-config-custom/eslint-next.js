@@ -1,10 +1,9 @@
 module.exports = {
   extends: [
-    'next',
+    'next/core-web-vitals',
     'turbo',
     'airbnb',
     'airbnb-typescript',
-    'plugin:import/recommended',
     'plugin:import/typescript',
     'prettier',
   ],
@@ -47,6 +46,7 @@ module.exports = {
     'linebreak-style': 'off',
     'no-console': 'warn',
     'no-unused-vars': 'off',
+    'import/extensions': 0,
     // typescript
     '@typescript-eslint/no-unused-vars': 'warn',
     // react

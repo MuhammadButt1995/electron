@@ -2,10 +2,10 @@
  * @module preload
  */
 
-import { contextBridge } from "electron";
+import { contextBridge } from 'electron';
 
 // Expose version number to renderer
-contextBridge.exposeInMainWorld("yerba", { version: 0.1 });
+contextBridge.exposeInMainWorld('app', { version: 0.1 });
 
 /**
  * The "Main World" is the JavaScript context that your main renderer code runs in.

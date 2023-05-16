@@ -3,10 +3,10 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".next/**"]
+      "outputs": ["dist/**", ".next/**", "out/**/*"]
     },
     "compile": {
-      "dependsOn": ["^build", "^compile"],
+      "dependsOn": ["web#build", "^compile"],
       "outputs": ["dist/**", ".next/**"]
     },
     "lint": {

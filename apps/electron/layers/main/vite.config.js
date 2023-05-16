@@ -1,6 +1,6 @@
-import { node } from "../../.electron-vendors.cache.json";
-import { join } from "path";
-import { builtinModules } from "module";
+import { node } from '../../.electron-vendors.cache.json';
+import { join } from 'path';
+import { builtinModules } from 'module';
 
 const PACKAGE_ROOT = __dirname;
 
@@ -14,27 +14,28 @@ const config = {
   envDir: process.cwd(),
   resolve: {
     alias: {
-      "@main/": join(PACKAGE_ROOT, "src") + "/",
+      '@main/': join(PACKAGE_ROOT, 'src') + '/',
     },
   },
   build: {
-    sourcemap: "inline",
+    sourcemap: 'inline',
     target: `node${node}`,
-    outDir: "dist",
-    assetsDir: ".",
-    minify: process.env.MODE !== "development",
+    outDir: 'dist',
+    assetsDir: '.',
+    minify: process.env.MODE !== 'development',
     lib: {
-      entry: "src/index.ts",
-      formats: ["cjs"],
+      entry: 'src/index.ts',
+      formats: ['cjs'],
     },
     rollupOptions: {
       external: [
-        "electron",
-        "electron-next",
+        'electron',
+        'electron-next',
+        'ws',
         ...builtinModules.flatMap((p) => [p, `node:${p}`]),
       ],
       output: {
-        entryFileNames: "[name].cjs",
+        entryFileNames: '[name].cjs',
       },
     },
     emptyOutDir: true,
