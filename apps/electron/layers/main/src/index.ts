@@ -1,4 +1,4 @@
-import { app, nativeImage } from 'electron';
+import { app, nativeImage, Tray } from 'electron';
 import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
@@ -8,9 +8,17 @@ import {
   updateAzureStore,
   updateDomainStore,
   getInternetState,
+  getAzureState,
+  getDomainState,
+  trayStore,
+  checkAndUpdateIcon,
 } from './store';
 import createTray from './tray';
-import BalloonManager from './BalloonManager';
+import NotificationHandler from './NotificationHandler';
+
+if (process.platform !== 'darwin') {
+  app.setAppUserModelId(process.execPath);
+}
 
 /**
  * Prevent multiple instances
@@ -49,30 +57,17 @@ app.on('activate', restoreOrCreateWindow);
 
 const PATH_TO_NEXT_APP = path.join(__dirname, '../../../../web');
 const PORT = 3000;
+const notificationHandler = new NotificationHandler();
 
 app.on('ready', async () => {
   await prepareRenderer(PATH_TO_NEXT_APP, PORT);
   const tray = createTray();
 
-  tray.displayBalloon({
-    icon: path.join(__dirname, '../../../buildResources/robot-base.ico'),
-    title: 'Hello',
-    content: 'Icon test.',
-  });
-
-  const balloonManager = new BalloonManager(tray); // Create BalloonManager instance
-
-  // Register balloons here, e.g.
-  balloonManager.registerBalloon({
-    id: 'internetConnection',
-    condition: (state) => state.connectionState === 'not_connected',
-    options: {
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/wifi-lost.png')
-      ),
-      title: 'Internet Connection Lost',
-      content: 'Your internet connection has been lost.',
-    },
+  const unsubscribe = trayStore.subscribe(() => {
+    const { icon } = trayStore.getState();
+    const iconName = icon === 'green' ? 'robot-green.ico' : 'robot-yellow.ico';
+    const iconPath = path.join(__dirname, '../../../buildResources/', iconName);
+    tray?.setImage(iconPath);
   });
 
   const workerPath = path.join(__dirname, '../src/worker.js');
@@ -93,8 +88,7 @@ app.on('ready', async () => {
       default:
         console.error(`Unknown tool: ${tool}`);
     }
-
-    balloonManager.checkAndDisplay(getInternetState());
+    checkAndUpdateIcon();
   });
 
   // Error Handler
@@ -111,6 +105,45 @@ app.on('ready', async () => {
   worker.postMessage({ requestLatest: 'InternetConnectionTool' });
   worker.postMessage({ requestLatest: 'AzureConnectionTool' });
   worker.postMessage({ requestLatest: 'DomainConnectionTool' });
+
+  app.on('before-quit', unsubscribe);
+});
+
+// Subscribe to store changes
+getInternetState().subscribe((set, get, api) => {
+  if (get().wasConnectedNowNotConnected()) {
+    notificationHandler.addNotification({
+      title: 'Internet Connection Lost',
+      body: 'Your internet connection has been lost.',
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, '../assets/wifi-off.ico')
+      ), // Replace this path with the path to your icon
+    });
+  }
+});
+
+getDomainState().subscribe((set, get, api) => {
+  if (get().wasConnectedNowNotConnected()) {
+    notificationHandler.addNotification({
+      title: 'Domain Connection Lost',
+      body: 'Your domain connection has been lost.',
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, '../assets/domain-off.ico')
+      ), // Replace this path with the path to your icon
+    });
+  }
+});
+
+getAzureState().subscribe((set, get, api) => {
+  if (get().wasConnectedNowNotConnected()) {
+    notificationHandler.addNotification({
+      title: 'Azure Connection Lost',
+      body: 'Your Azure connection has been lost.',
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, '../assets/cloud.ico')
+      ), // Replace this path with the path to your icon
+    });
+  }
 });
 
 /**

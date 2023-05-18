@@ -45,8 +45,8 @@ const menuItems: (MenuItemConstructorOptions & { id?: string })[] = [
 const createTray = () => {
   tray = new Tray(
     process.platform === 'win32'
-      ? path.join(__dirname, '../../../buildResources/robot-base-gray.ico')
-      : path.join(__dirname, '../../../buildResources/robot-base-gray.icns')
+      ? path.join(__dirname, '../../../buildResources/robot-green.ico')
+      : path.join(__dirname, '../../../buildResources/robot-green.icns')
   );
 
   const buildMenuItems = (): (MenuItemConstructorOptions & {
