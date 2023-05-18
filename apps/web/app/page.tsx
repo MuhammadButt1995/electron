@@ -1,16 +1,15 @@
+/* eslint-disable react/jsx-no-useless-fragment */
+
 'use client';
 
 import useMounted from '@hooks/useMounted';
+import AppShell from '@components/AppShell';
 
 const Page = () => {
   const { mounted } = useMounted();
   return (
     <>
-      <div className='p-4 text-2xl'>Hello World</div>
-      <div>
-        <span className='font-bold'>{'App version: '}</span>
-        {mounted && window.app.version}
-      </div>
+      <AppShell />
     </>
   );
 };

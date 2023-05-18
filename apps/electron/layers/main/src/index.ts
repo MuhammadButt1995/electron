@@ -61,6 +61,7 @@ const notificationHandler = new NotificationHandler();
 
 app.on('ready', async () => {
   await prepareRenderer(PATH_TO_NEXT_APP, PORT);
+  restoreOrCreateWindow();
   const tray = createTray();
 
   const unsubscribe = trayStore.subscribe(() => {
