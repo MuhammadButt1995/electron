@@ -5,6 +5,7 @@ import { subscribeWithSelector } from 'zustand/middleware';
 import { nativeImage, NativeImage } from 'electron';
 import { wasConnectedNowNotConnectedNotif } from '@storeHelpers/notifications';
 import { updateIcon } from '@storeHelpers/updateIcon';
+import { getCrossPlatformIcon } from '@utils/iconUtils';
 import { updateTrayStore, TrayIconState } from './tray-store';
 
 export type ConnectionState =
@@ -46,22 +47,22 @@ const createConnectionStore = () =>
   );
 
 export const internetStore = createConnectionStore();
-export const azureStore = createConnectionStore();
+export const ADStore = createConnectionStore();
 export const domainStore = createConnectionStore();
 
 export const getInternetState = () => internetStore.getState();
-export const getAzureState = () => azureStore.getState();
+export const getADState = () => ADStore.getState();
 export const getDomainState = () => domainStore.getState();
 
 export const checkAndUpdateIcon = () => {
   const internetState = getInternetState();
-  const azureState = getAzureState();
+  const ADState = getADState();
   const domainState = getDomainState();
 
   let newIcon: TrayIconState = 'green';
   if (
     internetState.connectionState !== 'connected' ||
-    azureState.connectionState !== 'connected' ||
+    ADState.connectionState !== 'connected' ||
     domainState.connectionState !== 'connected'
   ) {
     newIcon = 'yellow';
@@ -75,8 +76,8 @@ export const updateInternetStore = (newState: Message) => {
   checkAndUpdateIcon();
 };
 
-export const updateAzureStore = (newState: Message) => {
-  azureStore.getState().updateConnectionState(newState);
+export const updateADStore = (newState: Message) => {
+  ADStore.getState().updateConnectionState(newState);
   checkAndUpdateIcon();
 };
 
@@ -92,19 +93,15 @@ export const notificationUnsubscribers = [
     wasConnectedNowNotConnectedNotif({
       title: 'Internet Connection Lost',
       body: 'Your internet connection has been lost.',
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/wifi-off.ico')
-      ),
+      icon: getCrossPlatformIcon(path.join(__dirname, '../assets/wifi-off')),
     })
   ),
-  azureStore.subscribe(
+  ADStore.subscribe(
     (state) => state.connectionState,
     wasConnectedNowNotConnectedNotif({
       title: 'Azure Connection Lost',
       body: 'Your Azure connection has been lost.',
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/cloud.ico')
-      ),
+      icon: getCrossPlatformIcon(path.join(__dirname, '../assets/cloud-off')),
     })
   ),
   domainStore.subscribe(
@@ -112,9 +109,7 @@ export const notificationUnsubscribers = [
     wasConnectedNowNotConnectedNotif({
       title: 'Domain Connection Lost',
       body: 'Your domain connection has been lost.',
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/domain-off.ico')
-      ),
+      icon: getCrossPlatformIcon(path.join(__dirname, '../assets/domain-off')),
     })
   ),
 ];

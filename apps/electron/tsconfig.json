@@ -1,19 +1,18 @@
 {
   "extends": "tsconfig/electron.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@main/*": ["./layers/main/src/*"],
       "@preload/*": ["./layers/preload/src/*"],
       "@lib/*": ["./layers/main/src/lib/*"],
+      "@websocket/*": ["./layers/main/src/lib/websocket/*"],
+      "@utils/*": ["./layers/main/src/lib/utils/*"],
       "@notifications/*": ["./layers/main/src/lib/notifications/*"],
       "@store/*": ["./layers/main/src/lib/store/*"],
       "@storeHelpers/*": ["./layers/main/src/lib/store/helpers/*"]
     }
   },
-  "include": [
-    "layers/**/*.ts",
-    "types/**/*.d.ts",
-    "layers/main/src/lib/websocket/worker.js"
-  ],
+  "include": ["layers/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules", "layers/**/*.spec.ts", "layers/**/*.test.ts"]
 }

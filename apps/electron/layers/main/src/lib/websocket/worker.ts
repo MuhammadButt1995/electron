@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { parentPort } = require('node:worker_threads');
-const WebSocket = require('ws');
+import { parentPort } from 'worker_threads';
+import WebSocket from 'ws';
 
 const tools = [
   'InternetConnectionTool',
-  'AzureConnectionTool',
+  'ADConnectionTool',
   'DomainConnectionTool',
 ];
 
@@ -25,14 +25,14 @@ tools.forEach((tool) => {
 
   socket.on('message', (data) => {
     console.log(`Received message from ${tool}: ${data}`);
-    const message = JSON.parse(data);
+    const message = JSON.parse(data.toString());
 
     let connectionState;
     let sublabel = '';
 
     switch (tool) {
       case 'InternetConnectionTool':
-        connectionState = message.connected ? 'connected' : 'not_connected';
+        connectionState = message.is_connected ? 'connected' : 'not_connected';
         parentPort?.postMessage({
           tool,
           message: {
@@ -42,11 +42,8 @@ tools.forEach((tool) => {
         });
         break;
 
-      case 'AzureConnectionTool':
-        connectionState =
-          message.azure_ad_joined && message.domain_joined
-            ? 'connected'
-            : 'not_connected';
+      case 'ADConnectionTool':
+        connectionState = message.is_connected ? 'connected' : 'not_connected';
         parentPort?.postMessage({
           tool,
           message: {
@@ -57,18 +54,18 @@ tools.forEach((tool) => {
         break;
 
       case 'DomainConnectionTool':
-        if (message.connection_type === 'NOT_CONNECTED') {
+        if (message.status === 'not_connected') {
           connectionState = 'not_connected';
           sublabel = 'Use ZPA or VPN';
-        } else if (['ZPA', 'VPN'].includes(message.connection_type)) {
+        } else if (['ZPA', 'VPN'].includes(message.status)) {
           connectionState = 'connected';
-          sublabel = message.connection_type;
-        } else if (message.connection_type === 'NO_INTERNET') {
+          sublabel = message.status;
+        } else if (message.status === 'no_internet') {
           connectionState = 'error';
           sublabel = 'requires Internet';
         } else {
           console.error(
-            `Unknown connection type for DomainConnectionTool: ${message.connection_type}`
+            `Unknown connection type for DomainConnectionTool: ${message.status}`
           );
           return;
         }
@@ -86,7 +83,7 @@ tools.forEach((tool) => {
     }
   });
 
-  parentPort.on('message', (data) => {
+  parentPort?.on('message', (data: any) => {
     if (data.requestLatest === tool) {
       parentPort?.postMessage({
         tool,

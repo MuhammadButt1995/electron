@@ -23,7 +23,12 @@ const config = {
     output: 'dist',
     buildResources: 'buildResources',
   },
-  files: ['layers/**/dist/**'],
+  files: [
+    'layers/**/dist/**',
+    'layers/**/assets/**',
+    'buildResources',
+    'layers/main/src/lib/websocket/worker.ts',
+  ],
   extraResources: {
     from: NEXT_EXPORT_OUT_DIR,
     to: 'web/out',

@@ -4,20 +4,24 @@ import { debounce } from 'lodash';
 
 import {
   internetStore,
-  azureStore,
+  ADStore,
   domainStore,
   getInternetState,
-  getAzureState,
+  getADState,
   getDomainState,
 } from '@store/store';
 
+import { getCrossPlatformIcon } from '@utils/iconUtils';
+
 let tray: Tray | null = null;
+
+const isMacOS = process.platform === 'darwin';
 
 const createTray = () => {
   tray = new Tray(
-    process.platform === 'win32'
-      ? path.join(__dirname, '../../../buildResources/robot-green.ico')
-      : path.join(__dirname, '../../../buildResources/robot-green.icns')
+    getCrossPlatformIcon(
+      path.join(__dirname, '../../../buildResources/robot-green')
+    )
   );
 
   const buildMenuItems = (): (MenuItemConstructorOptions & {
@@ -31,10 +35,10 @@ const createTray = () => {
     },
     { type: 'separator' },
     {
-      id: 'azure',
-      label: `Azure Connection`,
-      icon: getAzureState().icon,
-      sublabel: getAzureState().sublabel,
+      id: 'AD',
+      label: isMacOS ? 'AD Connection' : `Azure AD Connection`,
+      icon: getADState().icon,
+      sublabel: getADState().sublabel,
     },
     { type: 'separator' },
     {
@@ -59,7 +63,7 @@ const createTray = () => {
     internetStore.subscribe(() => {
       updateMenu();
     }),
-    azureStore.subscribe(() => {
+    ADStore.subscribe(() => {
       updateMenu();
     }),
     domainStore.subscribe(() => {

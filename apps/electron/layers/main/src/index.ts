@@ -2,15 +2,17 @@ import { app } from 'electron';
 import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
-import { Worker } from 'worker_threads';
+
 import {
   updateInternetStore,
-  updateAzureStore,
+  updateADStore,
   updateDomainStore,
   checkAndUpdateIcon,
   notificationUnsubscribers,
 } from '@store/store';
 import { trayStore } from '@store/tray-store';
+import { getCrossPlatformIcon } from '@utils/iconUtils';
+import { workerTs } from '@utils/workerUtils';
 import createTray from './tray';
 
 if (process.platform !== 'darwin') {
@@ -62,13 +64,21 @@ app.on('ready', async () => {
 
   const updateTrayUnsubscriber = trayStore.subscribe(() => {
     const { icon } = trayStore.getState();
-    const iconName = icon === 'green' ? 'robot-green.ico' : 'robot-yellow.ico';
-    const iconPath = path.join(__dirname, '../../../buildResources/', iconName);
+    const iconName = icon === 'green' ? 'robot-green' : 'robot-yellow';
+    const iconPath = getCrossPlatformIcon(
+      path.join(__dirname, '../../../buildResources/', iconName)
+    );
     tray?.setImage(iconPath);
   });
 
-  const workerPath = path.join(__dirname, '../src/lib/websocket/worker.js');
-  const worker = new Worker(workerPath);
+  const worker = workerTs(
+    path.join(__dirname, '../src/lib/websocket/worker.ts'),
+    {
+      worderData: {
+        /* */
+      },
+    }
+  );
 
   worker.on('message', (data) => {
     const { tool, message } = data;
@@ -76,8 +86,8 @@ app.on('ready', async () => {
       case 'InternetConnectionTool':
         updateInternetStore(message);
         break;
-      case 'AzureConnectionTool':
-        updateAzureStore(message);
+      case 'ADConnectionTool':
+        updateADStore(message);
         break;
       case 'DomainConnectionTool':
         updateDomainStore(message);
@@ -100,7 +110,7 @@ app.on('ready', async () => {
 
   // Request latest states from tools
   worker.postMessage({ requestLatest: 'InternetConnectionTool' });
-  worker.postMessage({ requestLatest: 'AzureConnectionTool' });
+  worker.postMessage({ requestLatest: 'ADConnectionTool' });
   worker.postMessage({ requestLatest: 'DomainConnectionTool' });
 
   app.on('before-quit', () => {
@@ -108,14 +118,3 @@ app.on('ready', async () => {
     notificationUnsubscribers.forEach((unsubscribe) => unsubscribe());
   });
 });
-
-/**
- * Check new app version in production mode only
- */
-if (import.meta.env.PROD) {
-  app
-    .whenReady()
-    .then(() => import('electron-updater'))
-    .then(({ autoUpdater }) => autoUpdater.checkForUpdatesAndNotify())
-    .catch((e) => console.error('Failed check updates:', e));
-}

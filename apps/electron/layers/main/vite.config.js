@@ -1,6 +1,7 @@
 import { node } from '../../.electron-vendors.cache.json';
 import { join } from 'path';
 import { builtinModules } from 'module';
+import { fileURLToPath } from 'node:url';
 
 const PACKAGE_ROOT = __dirname;
 
@@ -16,6 +17,8 @@ const config = {
     alias: {
       '@main/': join(PACKAGE_ROOT, 'src') + '/',
       '@lib/': join(PACKAGE_ROOT, 'src', 'lib') + '/',
+      '@websocket/': join(PACKAGE_ROOT, 'src', 'lib', 'websocket') + '/',
+      '@utils/': join(PACKAGE_ROOT, 'src', 'lib', 'utils') + '/',
       '@notifications/':
         join(PACKAGE_ROOT, 'src', 'lib', 'notifications') + '/',
       '@store/': join(PACKAGE_ROOT, 'src', 'lib', 'store') + '/',
@@ -37,7 +40,6 @@ const config = {
       external: [
         'electron',
         'electron-next',
-        'ws',
         ...builtinModules.flatMap((p) => [p, `node:${p}`]),
       ],
       output: {
