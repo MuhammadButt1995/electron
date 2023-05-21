@@ -15,6 +15,12 @@ const config = {
   resolve: {
     alias: {
       '@main/': join(PACKAGE_ROOT, 'src') + '/',
+      '@lib/': join(PACKAGE_ROOT, 'src', 'lib') + '/',
+      '@notifications/':
+        join(PACKAGE_ROOT, 'src', 'lib', 'notifications') + '/',
+      '@store/': join(PACKAGE_ROOT, 'src', 'lib', 'store') + '/',
+      '@storeHelpers/':
+        join(PACKAGE_ROOT, 'src', 'lib', 'store', 'helpers') + '/',
     },
   },
   build: {

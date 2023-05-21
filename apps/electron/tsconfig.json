@@ -3,9 +3,17 @@
   "compilerOptions": {
     "paths": {
       "@main/*": ["./layers/main/src/*"],
-      "@preload/*": ["./layers/preload/src/*"]
+      "@preload/*": ["./layers/preload/src/*"],
+      "@lib/*": ["./layers/main/src/lib/*"],
+      "@notifications/*": ["./layers/main/src/lib/notifications/*"],
+      "@store/*": ["./layers/main/src/lib/store/*"],
+      "@storeHelpers/*": ["./layers/main/src/lib/store/helpers/*"]
     }
   },
-  "include": ["layers/**/*.ts", "types/**/*.d.ts", "layers/main/src/worker.js"],
+  "include": [
+    "layers/**/*.ts",
+    "types/**/*.d.ts",
+    "layers/main/src/lib/websocket/worker.js"
+  ],
   "exclude": ["node_modules", "layers/**/*.spec.ts", "layers/**/*.test.ts"]
 }

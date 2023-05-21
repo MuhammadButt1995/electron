@@ -1,10 +1,4 @@
-import {
-  app,
-  Tray,
-  Menu,
-  MenuItemConstructorOptions,
-  nativeImage,
-} from 'electron';
+import { app, Tray, Menu, MenuItemConstructorOptions } from 'electron';
 import path from 'path';
 import { debounce } from 'lodash';
 
@@ -15,32 +9,9 @@ import {
   getInternetState,
   getAzureState,
   getDomainState,
-} from './store';
+} from '@store/store';
 
 let tray: Tray | null = null;
-
-const menuItems: (MenuItemConstructorOptions & { id?: string })[] = [
-  {
-    id: 'internet',
-    label: `Internet Connection`,
-    icon: getInternetState().icon,
-    sublabel: getInternetState().sublabel,
-  },
-  { type: 'separator' },
-  {
-    id: 'azure',
-    label: `Azure Connection`,
-    icon: getAzureState().icon,
-    sublabel: getAzureState().sublabel,
-  },
-  { type: 'separator' },
-  {
-    id: 'domain',
-    label: `Domain Connection`,
-    icon: getDomainState().icon,
-    sublabel: getDomainState().sublabel,
-  },
-];
 
 const createTray = () => {
   tray = new Tray(

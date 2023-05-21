@@ -1,4 +1,4 @@
-import { app, nativeImage, Tray } from 'electron';
+import { app } from 'electron';
 import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
@@ -7,14 +7,11 @@ import {
   updateInternetStore,
   updateAzureStore,
   updateDomainStore,
-  getInternetState,
-  getAzureState,
-  getDomainState,
-  trayStore,
   checkAndUpdateIcon,
-} from './store';
+  notificationUnsubscribers,
+} from '@store/store';
+import { trayStore } from '@store/tray-store';
 import createTray from './tray';
-import NotificationHandler from './NotificationHandler';
 
 if (process.platform !== 'darwin') {
   app.setAppUserModelId(process.execPath);
@@ -57,21 +54,20 @@ app.on('activate', restoreOrCreateWindow);
 
 const PATH_TO_NEXT_APP = path.join(__dirname, '../../../../web');
 const PORT = 3000;
-const notificationHandler = new NotificationHandler();
 
 app.on('ready', async () => {
   await prepareRenderer(PATH_TO_NEXT_APP, PORT);
-  restoreOrCreateWindow();
+  // restoreOrCreateWindow();
   const tray = createTray();
 
-  const unsubscribe = trayStore.subscribe(() => {
+  const updateTrayUnsubscriber = trayStore.subscribe(() => {
     const { icon } = trayStore.getState();
     const iconName = icon === 'green' ? 'robot-green.ico' : 'robot-yellow.ico';
     const iconPath = path.join(__dirname, '../../../buildResources/', iconName);
     tray?.setImage(iconPath);
   });
 
-  const workerPath = path.join(__dirname, '../src/worker.js');
+  const workerPath = path.join(__dirname, '../src/lib/websocket/worker.js');
   const worker = new Worker(workerPath);
 
   worker.on('message', (data) => {
@@ -107,44 +103,10 @@ app.on('ready', async () => {
   worker.postMessage({ requestLatest: 'AzureConnectionTool' });
   worker.postMessage({ requestLatest: 'DomainConnectionTool' });
 
-  app.on('before-quit', unsubscribe);
-});
-
-// Subscribe to store changes
-getInternetState().subscribe((set, get, api) => {
-  if (get().wasConnectedNowNotConnected()) {
-    notificationHandler.addNotification({
-      title: 'Internet Connection Lost',
-      body: 'Your internet connection has been lost.',
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/wifi-off.ico')
-      ), // Replace this path with the path to your icon
-    });
-  }
-});
-
-getDomainState().subscribe((set, get, api) => {
-  if (get().wasConnectedNowNotConnected()) {
-    notificationHandler.addNotification({
-      title: 'Domain Connection Lost',
-      body: 'Your domain connection has been lost.',
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/domain-off.ico')
-      ), // Replace this path with the path to your icon
-    });
-  }
-});
-
-getAzureState().subscribe((set, get, api) => {
-  if (get().wasConnectedNowNotConnected()) {
-    notificationHandler.addNotification({
-      title: 'Azure Connection Lost',
-      body: 'Your Azure connection has been lost.',
-      icon: nativeImage.createFromPath(
-        path.join(__dirname, '../assets/cloud.ico')
-      ), // Replace this path with the path to your icon
-    });
-  }
+  app.on('before-quit', () => {
+    updateTrayUnsubscriber();
+    notificationUnsubscribers.forEach((unsubscribe) => unsubscribe());
+  });
 });
 
 /**

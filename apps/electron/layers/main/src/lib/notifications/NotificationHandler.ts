@@ -1,6 +1,6 @@
 import { Notification as ElectronNotification, nativeImage } from 'electron';
 
-interface AppNotification {
+export interface AppNotification {
   title: string;
   body: string;
   icon: Electron.NativeImage;
