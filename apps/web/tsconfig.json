@@ -12,10 +12,11 @@
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
     "paths": {
-      "@components/*": ["./app/components/*"],
-      "@providers/*": ["./app/components/providers/*"],
-      "@lib/*": ["./app/lib/*"],
-      "@hooks/*": ["./app/hooks/*"]
+      "@/components/*": ["./app/components/*"],
+      "@/hooks/*": ["./app/hooks/*"],
+      "@/lib/*": ["./app/lib/*"],
+      "@/styles/*": ["./app/styles/*"],
+      "@/store/*": ["./app/store/*"]
     }
   }
 }

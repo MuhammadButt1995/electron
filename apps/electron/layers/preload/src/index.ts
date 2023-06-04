@@ -2,10 +2,27 @@
  * @module preload
  */
 
-import { contextBridge } from 'electron';
+import { contextBridge, ipcRenderer } from 'electron';
 
 // Expose version number to renderer
 contextBridge.exposeInMainWorld('app', { version: 0.1 });
+contextBridge.exposeInMainWorld(
+  'onInternetStateChanged',
+  (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
+    ipcRenderer.on('internet-state-changed', callback)
+);
+
+contextBridge.exposeInMainWorld(
+  'onADStateChanged',
+  (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
+    ipcRenderer.on('ad-state-changed', callback)
+);
+
+contextBridge.exposeInMainWorld(
+  'onDomainStateChanged',
+  (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
+    ipcRenderer.on('domain-state-changed', callback)
+);
 
 /**
  * The "Main World" is the JavaScript context that your main renderer code runs in.

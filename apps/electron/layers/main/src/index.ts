@@ -1,14 +1,18 @@
-import { app } from 'electron';
+import { BrowserWindow, app, ipcMain } from 'electron';
 import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
 
 import {
+  internetStore,
+  ADStore,
+  domainStore,
   updateInternetStore,
   updateADStore,
   updateDomainStore,
   checkAndUpdateIcon,
   notificationUnsubscribers,
+  ConnectionMessage,
 } from '@store/store';
 import { trayStore } from '@store/tray-store';
 import { getCrossPlatformIcon } from '@utils/iconUtils';
@@ -27,7 +31,7 @@ if (!isSingleInstance) {
   app.quit();
   process.exit(0);
 }
-app.on('second-instance', restoreOrCreateWindow);
+// app.on('second-instance', restoreOrCreateWindow);
 
 /**
  * Disable Hardware Acceleration for more power-save
@@ -46,7 +50,7 @@ app.on('window-all-closed', () => {
 /**
  * @see https://www.electronjs.org/docs/v14-x-y/api/app#event-activate-macos Event: 'activate'
  */
-app.on('activate', restoreOrCreateWindow);
+// app.on('activate', restoreOrCreateWindow);
 
 /**
  * Uses prepareRenderer to launch next dev server on port 3000 (same as vite server)
@@ -56,11 +60,12 @@ app.on('activate', restoreOrCreateWindow);
 
 const PATH_TO_NEXT_APP = path.join(__dirname, '../../../../web');
 const PORT = 3000;
+let mainWindow: BrowserWindow;
 
 app.on('ready', async () => {
   await prepareRenderer(PATH_TO_NEXT_APP, PORT);
-  // restoreOrCreateWindow();
-  const tray = createTray();
+  mainWindow = await restoreOrCreateWindow();
+  const tray = createTray(mainWindow);
 
   const updateTrayUnsubscriber = trayStore.subscribe(() => {
     const { icon } = trayStore.getState();
@@ -84,13 +89,25 @@ app.on('ready', async () => {
     const { tool, message } = data;
     switch (tool) {
       case 'InternetConnectionTool':
-        updateInternetStore(message);
+        updateInternetStore(message as ConnectionMessage);
+        mainWindow.webContents.send(
+          'internet-state-changed',
+          message as ConnectionMessage
+        );
         break;
       case 'ADConnectionTool':
-        updateADStore(message);
+        updateADStore(message as ConnectionMessage);
+        mainWindow.webContents.send(
+          'ad-state-changed',
+          message as ConnectionMessage
+        );
         break;
       case 'DomainConnectionTool':
-        updateDomainStore(message);
+        updateDomainStore(message as ConnectionMessage);
+        mainWindow.webContents.send(
+          'domain-state-changed',
+          message as ConnectionMessage
+        );
         break;
       default:
         console.error(`Unknown tool: ${tool}`);

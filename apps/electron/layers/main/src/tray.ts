@@ -1,4 +1,10 @@
-import { app, Tray, Menu, MenuItemConstructorOptions } from 'electron';
+import {
+  app,
+  Tray,
+  Menu,
+  MenuItemConstructorOptions,
+  BrowserWindow,
+} from 'electron';
 import path from 'path';
 import { debounce } from 'lodash';
 
@@ -12,17 +18,33 @@ import {
 } from '@store/store';
 
 import { getCrossPlatformIcon } from '@utils/iconUtils';
+import calculateTrayWindowPosition from '@utils/trayUtils';
 
 let tray: Tray | null = null;
-
 const isMacOS = process.platform === 'darwin';
 
-const createTray = () => {
+const createTray = (mainWindow: BrowserWindow) => {
   tray = new Tray(
     getCrossPlatformIcon(
       path.join(__dirname, '../../../buildResources/robot-green')
     )
   );
+
+  const { roundedXPosition, roundedYPosition } = calculateTrayWindowPosition(
+    tray,
+    mainWindow
+  );
+
+  mainWindow.setPosition(roundedXPosition, roundedYPosition, false);
+
+  tray.on('click', () => {
+    if (mainWindow.isVisible()) {
+      mainWindow.hide();
+      return;
+    }
+
+    if (tray) mainWindow.show();
+  });
 
   const buildMenuItems = (): (MenuItemConstructorOptions & {
     id?: string;

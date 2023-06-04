@@ -20,10 +20,10 @@ export type ConnectionStoreState = {
   sublabel: string;
 };
 
-export type Message = Omit<ConnectionStoreState, 'icon'>;
+export type ConnectionMessage = Omit<ConnectionStoreState, 'icon'>;
 
 export type ConnectionStoreActions = {
-  updateConnectionState: (newState: Message) => void;
+  updateConnectionState: (newState: ConnectionMessage) => void;
 };
 
 const createConnectionStore = () =>
@@ -35,7 +35,7 @@ const createConnectionStore = () =>
           path.join(__dirname, '../assets/loading.png')
         ),
         sublabel: '',
-        updateConnectionState: (newState: Message) => {
+        updateConnectionState: (newState: ConnectionMessage) => {
           set(() => ({
             connectionState: newState.connectionState,
             icon: updateIcon(newState.connectionState),
@@ -71,17 +71,17 @@ export const checkAndUpdateIcon = () => {
   updateTrayStore(newIcon);
 };
 
-export const updateInternetStore = (newState: Message) => {
+export const updateInternetStore = (newState: ConnectionMessage) => {
   internetStore.getState().updateConnectionState(newState);
   checkAndUpdateIcon();
 };
 
-export const updateADStore = (newState: Message) => {
+export const updateADStore = (newState: ConnectionMessage) => {
   ADStore.getState().updateConnectionState(newState);
   checkAndUpdateIcon();
 };
 
-export const updateDomainStore = (newState: Message) => {
+export const updateDomainStore = (newState: ConnectionMessage) => {
   domainStore.getState().updateConnectionState(newState);
   checkAndUpdateIcon();
 };

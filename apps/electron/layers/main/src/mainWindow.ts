@@ -4,10 +4,24 @@ import { format } from 'url';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
-    show: false, // Use 'ready-to-show' event to show window
+    width: 475,
+    height: 550,
+    movable: false, // The window should not be movable
+    resizable: false, // The window should not be resizable
+    show: false, // Create the window as hidden
+    autoHideMenuBar: true,
+    frame: false,
+    alwaysOnTop: true,
+    skipTaskbar: true, // The window will not show up in the taskbar
     webPreferences: {
       preload: join(__dirname, '../../preload/dist/index.cjs'),
     },
+  });
+
+  // Prevent the window from being destroyed; hide it instead
+  browserWindow.on('close', (event) => {
+    event.preventDefault();
+    browserWindow.hide();
   });
 
   /**
@@ -15,7 +29,7 @@ async function createWindow() {
    * Use `show: false` and listener events `ready-to-show` to fix these issues.
    *
    * @see https://github.com/electron/electron/issues/25012
-   */
+
   browserWindow.on('ready-to-show', () => {
     browserWindow?.show();
 
@@ -23,6 +37,7 @@ async function createWindow() {
       browserWindow?.webContents.openDevTools();
     }
   });
+     */
 
   /**
    * URL for main window.
@@ -58,6 +73,8 @@ const restoreOrCreateWindow = async () => {
   }
 
   window.focus();
+
+  return window;
 };
 
 export default restoreOrCreateWindow;
