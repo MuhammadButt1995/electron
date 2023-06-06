@@ -4,9 +4,6 @@ import prepareRenderer from 'electron-next';
 import path from 'path';
 
 import {
-  internetStore,
-  ADStore,
-  domainStore,
   updateInternetStore,
   updateADStore,
   updateDomainStore,

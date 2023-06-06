@@ -1,6 +1,4 @@
-import { useState } from 'react';
-
-import useMounted from './useMounted';
+import { useState, useEffect } from 'react';
 
 export type ConnectionState =
   | 'connected'
@@ -16,35 +14,22 @@ export type ConnectionMessage = {
 export type ConnectionTool = 'internet' | 'ad' | 'domain';
 
 const useConnectionState = (tool: ConnectionTool) => {
-  const { mounted } = useMounted();
   const [connectionState, setConnectionState] =
     useState<ConnectionState>('loading');
   const [connectionLabel, setConnectionLabel] = useState('');
 
-  if (mounted) {
-    switch (tool) {
-      case 'internet':
-        window.onInternetStateChanged((_event, value: ConnectionMessage) => {
-          setConnectionState(value.connectionState);
-          setConnectionLabel(value.sublabel);
-        });
-        break;
-      case 'ad':
-        window.onADStateChanged((_event, value: ConnectionMessage) => {
-          setConnectionState(value.connectionState);
-          setConnectionLabel(value.sublabel);
-        });
-        break;
-      case 'domain':
-        window.onDomainStateChanged((_event, value: ConnectionMessage) => {
-          setConnectionState(value.connectionState);
-          setConnectionLabel(value.sublabel);
-        });
-        break;
-      default:
-        break;
-    }
-  }
+  useEffect(() => {
+    const events = {
+      internet: 'onInternetStateChanged',
+      ad: 'onADStateChanged',
+      domain: 'onDomainStateChanged',
+    };
+
+    window[events[tool]]((_event, value: ConnectionMessage) => {
+      setConnectionState(value.connectionState);
+      setConnectionLabel(value.sublabel);
+    });
+  }, [tool]);
 
   return { connectionState, connectionLabel };
 };

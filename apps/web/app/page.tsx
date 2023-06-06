@@ -3,62 +3,62 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-
-import { Laugh, AlertTriangle } from 'lucide-react';
-
+import { Wifi, Lock, Laptop } from 'lucide-react';
 import useConnectionState from './hooks/useConnectionState';
-import useMounted from './hooks/useMounted';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-
-import ConnectionBadge from './connection-badge';
-
-export type ConnectionState =
-  | 'connected'
-  | 'not_connected'
-  | 'error'
-  | 'loading';
-
-export type ConnectionMessage = {
-  connectionState: ConnectionState;
-  sublabel: string;
-};
+import ConnectionCard from './ConnectionCard';
+import { Skeleton } from './components/ui/skeleton';
 
 const HomePage = () => {
-  const [isOptimalEnviroment, setIsOptimalEnvironment] = useState(false);
+  const colorClassnames = {
+    connected: 'text-brand-green-700 dark:text-brand-green-500',
+    not_connected: 'text-brand-yellow-700 dark:text-brand-yellow-500',
+    error: 'text-brand-magenta-800 dark:text-brand-magenta-600',
+    loading: '',
+  };
 
-  const { connectionState: internetState, connectionLabel: internetLabel } =
-    useConnectionState('internet');
+  const internetState = useConnectionState('internet');
+  const ADState = useConnectionState('ad');
+  const domainState = useConnectionState('domain');
 
-  const { connectionState: ADState, connectionLabel: ADLabel } =
-    useConnectionState('ad');
+  const allConnected =
+    internetState.connectionState === 'connected' &&
+    ADState.connectionState === 'connected' &&
+    domainState.connectionState === 'connected';
 
-  const { connectionState: domainState, connectionLabel: domainLabel } =
-    useConnectionState('domain');
-
-  useEffect(() => {
-    if (
-      internetState === 'connected' &&
-      ADState === 'connected' &&
-      domainState === 'connected'
-    ) {
-      setIsOptimalEnvironment(true);
-    }
-
-    setIsOptimalEnvironment(false);
-  }, [internetState, ADState, domainState]);
+  const connectionTypes = {
+    internet: {
+      label: 'INTERNET',
+      icon: Wifi,
+      state: internetState,
+      sublabels: {
+        connected: 'You are connected to the internet.',
+        not_connected: 'You are not connected to the internet.',
+        error: 'Something went wrong...',
+      },
+    },
+    ad: {
+      label: 'DEVICE MANAGEMENT',
+      icon: Laptop,
+      state: ADState,
+      sublabels: {
+        connected: `Your device is bound to Azure Active Directory.`,
+        not_connected: 'You device is not bound to Azure Active Directory.',
+        error: 'Something went wrong...',
+      },
+    },
+    domain: {
+      label: 'TRUSTED NETWORK',
+      icon: Lock,
+      state: domainState,
+      sublabels: {
+        connected: `You are connected to ${domainState.connectionLabel}.`,
+        not_connected: 'You are not connected to either ZPA or VPN.',
+        error: 'Please connect to the internet to get trusted network status.',
+      },
+    },
+  };
 
   return (
     <>
@@ -73,60 +73,39 @@ const HomePage = () => {
             </p>
           </div>
         </div>
+        <div className='mt-4 grid grid-cols-2 gap-4'>
+          {Object.entries(connectionTypes).map(([key, connectionType]) => {
+            const { state, label, icon: Icon, sublabels } = connectionType;
+            const { connectionState } = state;
 
-        <Card className='my-4'>
-          <div className='p-4'>
-            {isOptimalEnviroment ? (
-              <Alert variant='success'>
-                <Laugh className='h-4 w-4' />
-                <AlertTitle className='text-brand-green-900 dark:text-brand-green-300'>
-                  You&apos;re good to go!
-                </AlertTitle>
-                <AlertDescription>
-                  Your device is configured for an optimal work environment!
-                </AlertDescription>
-              </Alert>
-            ) : (
-              <Alert className='' variant='warning'>
-                <AlertTriangle className='h-4 w-4' />
-                <AlertTitle className='text-brand-yellow-700 dark:text-brand-yellow-200'>
-                  Heads up!
-                </AlertTitle>
-                <AlertDescription>
-                  Your device isn&apos;t configured for an optimal work
-                  enviornment. Check the connection icons below for more details
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
-
-          <CardContent>
-            <div>
-              <Label className='text-muted-foreground text-md'>
-                Connections
-                <div className='mt-2 flex items-center justify-around'>
-                  <ConnectionBadge
-                    title='Internet'
-                    state={internetState}
-                    sublabel={internetLabel}
-                  />
-
-                  <ConnectionBadge
-                    title='Azure Active Directory'
-                    state={ADState}
-                    sublabel={ADLabel}
-                  />
-
-                  <ConnectionBadge
-                    title='Trusted Network'
-                    state={domainState}
-                    sublabel={domainLabel}
-                  />
+            let sublabel;
+            if (connectionState === 'loading') {
+              sublabel = '';
+              return (
+                <div key={key}>
+                  <Skeleton className='h-4 w-[175px]' />
+                  <Skeleton className='h-4 w-[150px]' />
                 </div>
-              </Label>
-            </div>
-          </CardContent>
-        </Card>
+              );
+            }
+            sublabel = sublabels[connectionState];
+
+            return (
+              <ConnectionCard
+                key={key}
+                title={label}
+                state={connectionState}
+                icon={
+                  <Icon
+                    className={`${colorClassnames[connectionState]} h-4 w-4`}
+                  />
+                }
+                sublabel={sublabel}
+                classNames={colorClassnames}
+              />
+            );
+          })}
+        </div>
       </div>
     </>
   );
