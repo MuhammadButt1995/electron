@@ -10,7 +10,6 @@ import {
 } from 'electron';
 import path from 'path';
 
-import { getCrossPlatformIcon } from '@utils/iconUtils';
 import calculateTrayWindowPosition from '@utils/trayUtils';
 
 let tray: Tray | null = null;
@@ -18,11 +17,7 @@ let trayMenu: Electron.Menu | null = null; // Keep a reference to the menu
 const isMacOS = process.platform === 'darwin';
 
 export const createTray = (mainWindow: BrowserWindow) => {
-  tray = new Tray(
-    getCrossPlatformIcon(
-      path.join(__dirname, '../../../buildResources/robot-yellow')
-    )
-  );
+  tray = new Tray(path.join(__dirname, '../../../buildResources/robot-x.png'));
 
   const { roundedXPosition, roundedYPosition } = calculateTrayWindowPosition(
     tray,
@@ -99,10 +94,10 @@ export const updateTrayIcon = () => {
     .every((item) => item.sublabel === 'Connected');
 
   const iconPath = allConnected
-    ? path.join(__dirname, '../../../buildResources/robot-green')
-    : path.join(__dirname, '../../../buildResources/robot-yellow');
+    ? path.join(__dirname, '../../../buildResources/robot-check')
+    : path.join(__dirname, '../../../buildResources/robot-x');
 
-  tray.setImage(getCrossPlatformIcon(iconPath));
+  tray.setImage(iconPath);
 };
 
 export const updateTrayMenu = (
