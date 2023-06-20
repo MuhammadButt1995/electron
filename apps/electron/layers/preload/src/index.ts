@@ -4,24 +4,24 @@
 
 import { contextBridge, ipcRenderer } from 'electron';
 
+export type ConnectionState = {
+  status: 'LOADING' | 'CONNECTED' | 'NOT CONNECTED' | 'ERROR';
+  description?: string;
+};
+
 // Expose version number to renderer
-contextBridge.exposeInMainWorld('app', { version: 0.1 });
 contextBridge.exposeInMainWorld(
-  'onInternetStateChanged',
-  (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
-    ipcRenderer.on('internet-state-changed', callback)
+  'onInternetStatusChange',
+  (state: ConnectionState) => ipcRenderer.send('onInternetStatusChange', state)
+);
+
+contextBridge.exposeInMainWorld('onADStatusChange', (state: ConnectionState) =>
+  ipcRenderer.send('onADStatusChange', state)
 );
 
 contextBridge.exposeInMainWorld(
-  'onADStateChanged',
-  (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
-    ipcRenderer.on('ad-state-changed', callback)
-);
-
-contextBridge.exposeInMainWorld(
-  'onDomainStateChanged',
-  (callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) =>
-    ipcRenderer.on('domain-state-changed', callback)
+  'onDomainStatusChange',
+  (state: ConnectionState) => ipcRenderer.send('onDomainStatusChange', state)
 );
 
 /**

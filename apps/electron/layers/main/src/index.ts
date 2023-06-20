@@ -3,18 +3,20 @@ import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
 
-import {
-  updateInternetStore,
-  updateADStore,
-  updateDomainStore,
-  checkAndUpdateIcon,
-  notificationUnsubscribers,
-  ConnectionMessage,
-} from '@store/store';
-import { trayStore } from '@store/tray-store';
-import { getCrossPlatformIcon } from '@utils/iconUtils';
-import { workerTs } from '@utils/workerUtils';
-import createTray from './tray';
+import { createTray, updateTrayMenu } from './tray';
+
+const iconPaths = {
+  loading: path.join(__dirname, '../assets/loading.png'),
+  connected: path.join(__dirname, '../assets/check.png'),
+  notConnected: path.join(__dirname, '../assets/warning.png'),
+  error: path.join(__dirname, '../assets/cross.png'),
+};
+
+const createStatusChangeHandler =
+  (menuItemId: string) => (event: any, data: any) => {
+    console.log(data);
+    updateTrayMenu(data, menuItemId, iconPaths);
+  };
 
 if (process.platform !== 'darwin') {
   app.setAppUserModelId(process.execPath);
@@ -64,71 +66,7 @@ app.on('ready', async () => {
   mainWindow = await restoreOrCreateWindow();
   const tray = createTray(mainWindow);
 
-  const updateTrayUnsubscriber = trayStore.subscribe(() => {
-    const { icon } = trayStore.getState();
-    const iconName = icon === 'green' ? 'robot-green' : 'robot-yellow';
-    const iconPath = getCrossPlatformIcon(
-      path.join(__dirname, '../../../buildResources/', iconName)
-    );
-    tray?.setImage(iconPath);
-  });
-
-  const worker = workerTs(
-    path.join(__dirname, '../src/lib/websocket/worker.ts'),
-    {
-      worderData: {
-        /* */
-      },
-    }
-  );
-
-  worker.on('message', (data) => {
-    const { tool, message } = data;
-    switch (tool) {
-      case 'InternetConnectionTool':
-        updateInternetStore(message as ConnectionMessage);
-        mainWindow.webContents.send(
-          'internet-state-changed',
-          message as ConnectionMessage
-        );
-        break;
-      case 'ADConnectionTool':
-        updateADStore(message as ConnectionMessage);
-        mainWindow.webContents.send(
-          'ad-state-changed',
-          message as ConnectionMessage
-        );
-        break;
-      case 'DomainConnectionTool':
-        updateDomainStore(message as ConnectionMessage);
-        mainWindow.webContents.send(
-          'domain-state-changed',
-          message as ConnectionMessage
-        );
-        break;
-      default:
-        console.error(`Unknown tool: ${tool}`);
-    }
-    checkAndUpdateIcon();
-  });
-
-  // Error Handler
-  worker.on('error', (error) => {
-    console.error(`Worker thread encountered an error: ${error}`);
-  });
-
-  // Exit Handler
-  worker.on('exit', (code) => {
-    if (code !== 0) console.error(`Worker stopped with exit code ${code}`);
-  });
-
-  // Request latest states from tools
-  worker.postMessage({ requestLatest: 'InternetConnectionTool' });
-  worker.postMessage({ requestLatest: 'ADConnectionTool' });
-  worker.postMessage({ requestLatest: 'DomainConnectionTool' });
-
-  app.on('before-quit', () => {
-    updateTrayUnsubscriber();
-    notificationUnsubscribers.forEach((unsubscribe) => unsubscribe());
-  });
+  ipcMain.on('onInternetStatusChange', createStatusChangeHandler('internet'));
+  ipcMain.on('onADStatusChange', createStatusChangeHandler('AD'));
+  ipcMain.on('onDomainStatusChange', createStatusChangeHandler('domain'));
 });
