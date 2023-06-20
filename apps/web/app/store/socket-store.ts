@@ -31,6 +31,11 @@ const ADConnectionToolWindowsResponse = z.object({
   is_connected: z.boolean(),
 });
 
+const ADConnectionToolMacResponse = z.object({
+  ad_bind: z.boolean(),
+  is_connected: z.boolean(),
+});
+
 const DomainConnectionToolResponse = z.object({
   is_connected: z.boolean(),
   status_message: z.union([
@@ -112,24 +117,53 @@ export const useWebSocketStore = create<WebSocketStoreState>((set, get) => ({
     }
 
     if (url.includes('ADConnectionTool')) {
-      const data = ADConnectionToolWindowsResponse.parse(jsonData);
+      if (window.navigator.userAgent.indexOf('Mac') !== -1) {
+        const data = ADConnectionToolMacResponse.parse(jsonData);
 
-      if (data.is_connected) {
-        useADStore.getState().updateStatus('CONNECTED');
-        useADStore
-          .getState()
-          .updateDescription('You are connected to the Azure AD.');
+        if (data.is_connected) {
+          useADStore.getState().updateStatus('CONNECTED');
+          useADStore
+            .getState()
+            .updateDescription(
+              'You machine is bound to On-Prem Active Directory.'
+            );
+        } else {
+          useADStore.getState().updateStatus('NOT CONNECTED');
+          useADStore
+            .getState()
+            .updateDescription(
+              'Your machine is not bound to On-Prem Active Directory.'
+            );
+        }
+
+        window.onADStatusChange({
+          status: useADStore.getState().status,
+          description: useADStore.getState().description,
+        });
       } else {
-        useADStore.getState().updateStatus('NOT CONNECTED');
-        useADStore
-          .getState()
-          .updateDescription('You are not connected Azure AD.');
-      }
+        const data = ADConnectionToolWindowsResponse.parse(jsonData);
 
-      window.onADStatusChange({
-        status: useADStore.getState().status,
-        description: useADStore.getState().description,
-      });
+        if (data.is_connected) {
+          useADStore.getState().updateStatus('CONNECTED');
+          useADStore
+            .getState()
+            .updateDescription(
+              'Your machine is domain joined and bound to Azure AD.'
+            );
+        } else {
+          useADStore.getState().updateStatus('NOT CONNECTED');
+          useADStore
+            .getState()
+            .updateDescription(
+              'Your machine is either not domain joined or not bound to Azure AD.'
+            );
+        }
+
+        window.onADStatusChange({
+          status: useADStore.getState().status,
+          description: useADStore.getState().description,
+        });
+      }
     }
 
     if (url.includes('DomainConnectionTool')) {

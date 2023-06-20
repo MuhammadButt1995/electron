@@ -17,7 +17,13 @@ let trayMenu: Electron.Menu | null = null; // Keep a reference to the menu
 const isMacOS = process.platform === 'darwin';
 
 export const createTray = (mainWindow: BrowserWindow) => {
-  tray = new Tray(path.join(__dirname, '../../../buildResources/robot-x.png'));
+  let trayIcon = nativeImage.createFromPath(
+    path.join(__dirname, '../../../buildResources/robot-x.png')
+  );
+
+  trayIcon = trayIcon.resize({ width: 20 });
+
+  tray = new Tray(trayIcon);
 
   const { roundedXPosition, roundedYPosition } = calculateTrayWindowPosition(
     tray,
@@ -97,7 +103,10 @@ export const updateTrayIcon = () => {
     ? path.join(__dirname, '../../../buildResources/robot-check.png')
     : path.join(__dirname, '../../../buildResources/robot-x.png');
 
-  tray.setImage(iconPath);
+  let trayIcon = nativeImage.createFromPath(iconPath);
+  trayIcon = trayIcon.resize({ width: 20 });
+
+  tray.setImage(trayIcon);
 };
 
 export const updateTrayMenu = (
