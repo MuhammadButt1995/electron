@@ -94,8 +94,8 @@ export const updateTrayIcon = () => {
     .every((item) => item.sublabel === 'Connected');
 
   const iconPath = allConnected
-    ? path.join(__dirname, '../../../buildResources/robot-check')
-    : path.join(__dirname, '../../../buildResources/robot-x');
+    ? path.join(__dirname, '../../../buildResources/robot-check.png')
+    : path.join(__dirname, '../../../buildResources/robot-x.png');
 
   tray.setImage(iconPath);
 };
