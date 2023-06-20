@@ -92,9 +92,11 @@ type IconPaths = {
 export const updateTrayIcon = () => {
   if (!tray || !trayMenu) return;
 
-  const allConnected = trayMenu.items.every(
-    (item) => item.sublabel === 'Connected'
-  );
+  const statusItemIds = ['internet', 'AD', 'domain']; // Add the ids of your status items here
+
+  const allConnected = trayMenu.items
+    .filter((item) => statusItemIds.includes(item.id)) // Only consider status items
+    .every((item) => item.sublabel === 'Connected');
 
   const iconPath = allConnected
     ? path.join(__dirname, '../../../buildResources/robot-green')
