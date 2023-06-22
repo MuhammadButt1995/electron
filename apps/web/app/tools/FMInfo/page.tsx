@@ -28,15 +28,12 @@ const FMInfoPage = () => {
             </TabsList>
             <ScrollArea className='h-[300px] w-fit pr-4'>
               <TabsContent value='user'>
-                {/* @ts-expect-error Server Component */}
                 <FMInfoSection section='user' />
               </TabsContent>
               <TabsContent value='device'>
-                {/* @ts-expect-error Server Component */}
                 <FMInfoSection section='device' />
               </TabsContent>
               <TabsContent value='networking'>
-                {/* @ts-expect-error Server Component */}
                 <FMInfoSection section='network' />
               </TabsContent>
             </ScrollArea>

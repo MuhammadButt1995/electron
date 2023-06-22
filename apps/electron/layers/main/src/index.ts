@@ -7,9 +7,9 @@ import { createTray, updateTrayMenu } from './tray';
 
 const iconPaths = {
   loading: path.join(__dirname, '../assets/loading.png'),
-  connected: path.join(__dirname, '../assets/check.png'),
-  notConnected: path.join(__dirname, '../assets/warning.png'),
-  error: path.join(__dirname, '../assets/cross.png'),
+  check: path.join(__dirname, '../assets/check.png'),
+  warning: path.join(__dirname, '../assets/warning.png'),
+  x_mark: path.join(__dirname, '../assets/cross.png'),
 };
 
 const createStatusChangeHandler =
@@ -69,4 +69,5 @@ app.on('ready', async () => {
   ipcMain.on('onInternetStatusChange', createStatusChangeHandler('internet'));
   ipcMain.on('onADStatusChange', createStatusChangeHandler('AD'));
   ipcMain.on('onDomainStatusChange', createStatusChangeHandler('domain'));
+  ipcMain.on('onWiFiStatusChange', createStatusChangeHandler('wifi'));
 });

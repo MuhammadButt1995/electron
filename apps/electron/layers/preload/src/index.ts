@@ -4,24 +4,31 @@
 
 import { contextBridge, ipcRenderer } from 'electron';
 
-export type ConnectionState = {
-  status: 'LOADING' | 'CONNECTED' | 'NOT CONNECTED' | 'ERROR';
-  description?: string;
-};
+export type ConnectionStatus =
+  | 'LOADING'
+  | 'CONNECTED'
+  | 'NOT CONNECTED'
+  | 'ERROR';
+
+export type WiFiStatus = 'LOADING' | 'RELIABLE' | 'DECENT' | 'SLOW' | 'ERROR';
 
 // Expose version number to renderer
 contextBridge.exposeInMainWorld(
   'onInternetStatusChange',
-  (state: ConnectionState) => ipcRenderer.send('onInternetStatusChange', state)
+  (state: ConnectionStatus) => ipcRenderer.send('onInternetStatusChange', state)
 );
 
-contextBridge.exposeInMainWorld('onADStatusChange', (state: ConnectionState) =>
+contextBridge.exposeInMainWorld('onADStatusChange', (state: ConnectionStatus) =>
   ipcRenderer.send('onADStatusChange', state)
 );
 
 contextBridge.exposeInMainWorld(
   'onDomainStatusChange',
-  (state: ConnectionState) => ipcRenderer.send('onDomainStatusChange', state)
+  (state: ConnectionStatus) => ipcRenderer.send('onDomainStatusChange', state)
+);
+
+contextBridge.exposeInMainWorld('onWiFiStatusChange', (state: WiFiStatus) =>
+  ipcRenderer.send('onWiFiStatusChange', state)
 );
 
 /**

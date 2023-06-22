@@ -54,6 +54,15 @@ export const createTray = (mainWindow: BrowserWindow) => {
     },
     { type: 'separator' },
     {
+      id: 'wifi',
+      label: `Wi-Fi Signal`,
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, '../assets/loading.png')
+      ),
+      sublabel: '',
+    },
+    { type: 'separator' },
+    {
       id: 'AD',
       label: isMacOS ? 'On-Prem AD' : `Azure AD`,
       icon: nativeImage.createFromPath(
@@ -78,16 +87,19 @@ export const createTray = (mainWindow: BrowserWindow) => {
   return tray;
 };
 
-export type ConnectionState = {
-  status: 'LOADING' | 'CONNECTED' | 'NOT CONNECTED' | 'ERROR';
-  description?: string;
-};
+export type ConnectionStatus =
+  | 'LOADING'
+  | 'CONNECTED'
+  | 'NOT CONNECTED'
+  | 'ERROR';
+
+export type WiFiStatus = 'LOADING' | 'RELIABLE' | 'DECENT' | 'SLOW' | 'ERROR';
 
 type IconPaths = {
   loading: string;
-  connected: string;
-  notConnected: string;
-  error: string;
+  check: string;
+  warning: string;
+  x_mark: string;
 };
 
 export const updateTrayIcon = () => {
@@ -97,7 +109,9 @@ export const updateTrayIcon = () => {
 
   const allConnected = trayMenu.items
     .filter((item) => statusItemIds.includes(item.id)) // Only consider status items
-    .every((item) => item.sublabel === 'Connected');
+    .every(
+      (item) => item.sublabel === 'Connected' || item.sublabel === 'Reliable'
+    );
 
   const iconPath = allConnected
     ? path.join(__dirname, '../../../buildResources/robot-check.png')
@@ -110,7 +124,7 @@ export const updateTrayIcon = () => {
 };
 
 export const updateTrayMenu = (
-  data: ConnectionState,
+  data: ConnectionStatus | WiFiStatus,
   menuItemId: string,
   icons: IconPaths
 ) => {
@@ -123,21 +137,33 @@ export const updateTrayMenu = (
     let iconPath: string;
     let sublabel: string;
 
-    switch (data.status) {
+    switch (data) {
       case 'LOADING':
         iconPath = icons.loading;
         sublabel = 'Loading...';
         break;
       case 'CONNECTED':
-        iconPath = icons.connected;
+        iconPath = icons.check;
         sublabel = 'Connected';
         break;
       case 'NOT CONNECTED':
-        iconPath = icons.notConnected;
+        iconPath = icons.warning;
         sublabel = 'Not Connected';
         break;
+      case 'RELIABLE':
+        iconPath = icons.check;
+        sublabel = 'Reliable';
+        break;
+      case 'DECENT':
+        iconPath = icons.warning;
+        sublabel = 'Decent';
+        break;
+      case 'SLOW':
+        iconPath = icons.x_mark;
+        sublabel = 'Slow';
+        break;
       case 'ERROR':
-        iconPath = icons.error;
+        iconPath = icons.x_mark;
         sublabel = 'Error';
         break;
       default:

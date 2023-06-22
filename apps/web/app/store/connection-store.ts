@@ -11,57 +11,23 @@ export type ConnectionAction<T extends ConnectionState> = {
   updateDescription: (description: T['description']) => void;
 };
 
-export const useInternetStore = create<
-  ConnectionState & ConnectionAction<ConnectionState>
->()(
-  persist(
-    (set) => ({
-      status: 'LOADING',
-      description: '',
-      updateStatus: (status) => set(() => ({ status })),
-      updateDescription: (description) => set(() => ({ description })),
-    }),
-    {
-      name: 'internet-storage',
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
-);
+function createConnectionStore(name: string) {
+  return create<ConnectionState & ConnectionAction<ConnectionState>>()(
+    persist(
+      (set) => ({
+        status: 'LOADING',
+        description: '',
+        updateStatus: (status) => set(() => ({ status })),
+        updateDescription: (description) => set(() => ({ description })),
+      }),
+      {
+        name: `${name}-storage`,
+        storage: createJSONStorage(() => sessionStorage),
+      }
+    )
+  );
+}
 
-export const useADStore = create<
-  ConnectionState & ConnectionAction<ConnectionState>
->()(
-  persist(
-    (set) => ({
-      status: 'LOADING',
-      description: '',
-      updateStatus: (status) => set(() => ({ status })),
-      updateDescription: (description) => set(() => ({ description })),
-    }),
-    {
-      name: 'ad-storage',
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
-);
-
-export const useDomainStore = create<
-  ConnectionState & ConnectionAction<ConnectionState>
->()(
-  persist(
-    (set) => ({
-      status: 'LOADING',
-      description: '',
-      updateStatus: (status) => set(() => ({ status })),
-      updateDescription: (description) => set(() => ({ description })),
-    }),
-    {
-      name: 'domain-storage',
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
-);
-
-export const internetStore = useInternetStore.getState();
-export const ADStore = useADStore.getState();
-export const domainStore = useDomainStore.getState();
+export const useInternetStore = createConnectionStore('internet');
+export const useADStore = createConnectionStore('ad');
+export const useDomainStore = createConnectionStore('domain');

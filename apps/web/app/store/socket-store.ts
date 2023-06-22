@@ -8,6 +8,8 @@ import {
   useDomainStore,
 } from '@/store/connection-store';
 
+import { useWiFiStore } from './wifi-assistant-store';
+
 // Define an interface for the state
 interface WebSocketStoreState {
   sockets: { [url: string]: WebSocket };
@@ -19,10 +21,6 @@ interface WebSocketStoreState {
 const ServerErrorResponse = z.object({
   success: z.literal(false),
   message: z.string(),
-});
-
-const InternetConnectionToolResponse = z.object({
-  is_connected: z.boolean(),
 });
 
 const ADConnectionToolWindowsResponse = z.object({
@@ -41,9 +39,42 @@ const DomainConnectionToolResponse = z.object({
   status_message: z.union([
     z.literal('ZPA'),
     z.literal('VPN'),
-    z.literal('no_internet'),
     z.literal('not_connected'),
   ]),
+});
+
+const WiFiDetailsToolResponse = z.object({
+  details: z.object({
+    signal: z.object({
+      quality: z.union([
+        z.literal('reliable'),
+        z.literal('decent'),
+        z.literal('slow'),
+      ]),
+      value: z.number(),
+    }),
+    link: z.object({
+      quality: z.union([
+        z.literal('reliable'),
+        z.literal('decent'),
+        z.literal('slow'),
+      ]),
+      value: z.string(),
+    }),
+    channel: z.object({
+      quality: z.union([
+        z.literal('reliable'),
+        z.literal('decent'),
+        z.literal('slow'),
+      ]),
+      value: z.number(),
+    }),
+    overall: z.union([
+      z.literal('reliable'),
+      z.literal('decent'),
+      z.literal('slow'),
+    ]),
+  }),
 });
 
 // Define a store for the WebSocket connection
@@ -95,27 +126,6 @@ export const useWebSocketStore = create<WebSocketStoreState>((set, get) => ({
       return;
     }
 
-    if (url.includes('InternetConnectionTool')) {
-      const data = InternetConnectionToolResponse.parse(jsonData);
-
-      if (data.is_connected) {
-        useInternetStore.getState().updateStatus('CONNECTED');
-        useInternetStore
-          .getState()
-          .updateDescription('You are connected to the Internet.');
-      } else {
-        useInternetStore.getState().updateStatus('NOT CONNECTED');
-        useInternetStore
-          .getState()
-          .updateDescription('You are not connected to the Internet.');
-      }
-
-      window.onInternetStatusChange({
-        status: useInternetStore.getState().status,
-        description: useInternetStore.getState().description,
-      });
-    }
-
     if (url.includes('ADConnectionTool')) {
       if (window.navigator.userAgent.indexOf('Mac') !== -1) {
         const data = ADConnectionToolMacResponse.parse(jsonData);
@@ -136,10 +146,7 @@ export const useWebSocketStore = create<WebSocketStoreState>((set, get) => ({
             );
         }
 
-        window.onADStatusChange({
-          status: useADStore.getState().status,
-          description: useADStore.getState().description,
-        });
+        window.onADStatusChange(useADStore.getState().status);
       } else {
         const data = ADConnectionToolWindowsResponse.parse(jsonData);
 
@@ -159,10 +166,7 @@ export const useWebSocketStore = create<WebSocketStoreState>((set, get) => ({
             );
         }
 
-        window.onADStatusChange({
-          status: useADStore.getState().status,
-          description: useADStore.getState().description,
-        });
+        window.onADStatusChange(useADStore.getState().status);
       }
     }
 
@@ -179,24 +183,50 @@ export const useWebSocketStore = create<WebSocketStoreState>((set, get) => ({
         useDomainStore
           .getState()
           .updateDescription('You are connected to VPN.');
-      } else if (data.status_message === 'no_internet') {
-        useDomainStore.getState().updateStatus('ERROR');
-        useDomainStore
-          .getState()
-          .updateDescription('Internet required for trusted network status.');
       } else {
         useDomainStore.getState().updateStatus('NOT CONNECTED');
         useDomainStore
           .getState()
           .updateDescription(
-            'You are not connected to either ZScaler ZPA or VPN.'
+            'Please connect to either ZScaler ZPA or Citrix VPN to get onto a trusted network.'
           );
       }
 
-      window.onDomainStatusChange({
-        status: useDomainStore.getState().status,
-        description: useDomainStore.getState().description,
-      });
+      window.onDomainStatusChange(useDomainStore.getState().status);
+    }
+
+    if (url.includes('WiFiDetailsTool')) {
+      const data = WiFiDetailsToolResponse.parse(jsonData);
+
+      useWiFiStore.getState().updateData({ signal: data.details.signal.value });
+      useWiFiStore.getState().updateData({ link: data.details.link.value });
+      useWiFiStore
+        .getState()
+        .updateData({ channel: data.details.channel.value });
+
+      if (data.details.overall === 'reliable') {
+        useWiFiStore.getState().updateStatus('RELIABLE');
+        useWiFiStore
+          .getState()
+          .updateDescription(
+            'Your connection is stable and dependable for your work environment.'
+          );
+      } else if (data.details.overall === 'decent') {
+        useWiFiStore.getState().updateStatus('DECENT');
+        useWiFiStore
+          .getState()
+          .updateDescription(
+            'Your connection is adequate for your work environment, however you may experience occasional slowdowns.'
+          );
+      } else {
+        useWiFiStore.getState().updateStatus('SLOW');
+        useWiFiStore
+          .getState()
+          .updateDescription(
+            'Your connection may make it challenging to maintain a stable online presence.'
+          );
+      }
+      window.onWiFiStatusChange(useWiFiStore.getState().status);
     }
   },
 }));
