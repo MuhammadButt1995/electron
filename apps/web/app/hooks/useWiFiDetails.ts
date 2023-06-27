@@ -1,22 +1,37 @@
 'use client';
 
-import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 import { useWiFiStore } from '@/store/wifi-assistant-store';
-import { useWebSocketStore } from '@/store/socket-store';
+import { useFetchData, WiFiDataResponse } from '@/hooks/useFetchData';
 
 export const useWiFiDetails = () => {
-  const [status, description, data] = useWiFiStore(
-    (state) => [state.status, state.description, state.data],
+  const { isLoading, isFetching, isSuccess, isError, refetch } = useFetchData(
+    'http://127.0.0.1:8000/tools/execute/WifiData/',
+    WiFiDataResponse,
+    false,
+    300000,
+    false
+  );
+
+  const [status, description, data, lastUpdated] = useWiFiStore(
+    (state) => [state.status, state.description, state.data, state.lastUpdated],
     shallow
   );
 
-  useEffect(() => {
-    useWebSocketStore
-      .getState()
-      .createSocket('ws://127.0.0.1:8000/tools/WiFiDetailsTool/ws');
-    // Do not close the WebSocket connection when the component unmounts
-  }, []);
+  const wifiResponse = {
+    isFetching,
+    isLoading,
+    isSuccess,
+    isError,
+    refetch,
+  };
 
-  return { status, description, data };
+  const wifiState = {
+    status,
+    description,
+    data,
+    lastUpdated,
+  };
+
+  return { wifiResponse, wifiState };
 };

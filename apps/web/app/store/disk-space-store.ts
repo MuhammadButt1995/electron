@@ -2,43 +2,45 @@ import { create } from 'zustand';
 import dayjs from 'dayjs';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-export type WiFiState = {
-  status: 'LOADING' | 'RELIABLE' | 'DECENT' | 'SLOW' | 'ERROR';
+export type DiskSpaceState = {
+  status: 'LOADING' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ERROR';
   description?: string;
-  data: {
-    signal: number;
-    radioType: string;
-    channel: number;
+  diskData: {
+    totalDiskSpace: string;
+    currentDiskUsage: string;
+    remainingDiskSpace: string;
   };
   lastUpdated: string;
 };
 
-export type WiFiAction<T extends WiFiState> = {
+export type DiskSpaceAction<T extends DiskSpaceState> = {
   updateStatus: (status: T['status']) => void;
   updateDescription: (description: T['description']) => void;
-  updateData: (data: Partial<T['data']>) => void;
+  updateDiskData: (data: Partial<T['diskData']>) => void;
   updateLastUpdated: (lastUpdated: T['lastUpdated']) => void;
 };
 
-export const useWiFiStore = create<WiFiState & WiFiAction<WiFiState>>()(
+export const useDiskSpaceStore = create<
+  DiskSpaceState & DiskSpaceAction<DiskSpaceState>
+>()(
   persist(
     (set) => ({
       status: 'LOADING',
       description: '',
-      data: {
-        signal: 0,
-        radioType: '',
-        channel: 0,
-      },
       lastUpdated: dayjs().format('ddd, MMM D, YYYY h:mm A'),
+      diskData: {
+        totalDiskSpace: '',
+        currentDiskUsage: '',
+        remainingDiskSpace: '',
+      },
       updateStatus: (status) => set({ status }),
       updateDescription: (description) => set({ description }),
-      updateData: (data) =>
-        set((state) => ({ data: { ...state.data, ...data } })),
+      updateDiskData: (data) =>
+        set((state) => ({ diskData: { ...state.diskData, ...data } })),
       updateLastUpdated: (lastUpdated) => set(() => ({ lastUpdated })),
     }),
     {
-      name: 'wifi-storage',
+      name: 'disk-space-storage',
       storage: createJSONStorage(() => sessionStorage),
     }
   )

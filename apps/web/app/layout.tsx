@@ -2,12 +2,12 @@
 
 'use client';
 
-import { Home, Wrench, Settings, Sun, Moon } from 'lucide-react';
-
+import { Home, Info, Wrench, Settings, Sun, Moon } from 'lucide-react';
 import '@/styles/globals.css';
 import { useState } from 'react';
 import { Source_Sans_Pro } from '@next/font/google';
 import { useRouter } from 'next/navigation';
+import Providers from '@/components/lib/provider';
 import { useSettingsStore } from './store/settings-store';
 
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,7 @@ const Sidebar = ({ theme, children }: SidebarProps) => (
 export default function RootLayout({ children }: { children: JSX.Element }) {
   const theme = useSettingsStore((state) => state.theme);
   const toggleTheme = useSettingsStore((state) => state.toggleTheme);
-  const [active, setActive] = useState('home');
+  const [active, setActive] = useState('fminfo');
   const router = useRouter();
 
   const onHomeIconClick = () => {
@@ -80,14 +80,14 @@ export default function RootLayout({ children }: { children: JSX.Element }) {
                   <TooltipTrigger asChild>
                     <Button
                       onClick={onHomeIconClick}
-                      variant={active === 'home' ? 'outline' : 'ghost'}
+                      variant={active === 'fminfo' ? 'outline' : 'ghost'}
                       size='sm'
                     >
-                      <Home className='h-4 w-4' />
+                      <Info className='h-4 w-4' />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side='top' align='center'>
-                    <p>Home</p>
+                    <p>FMInfo</p>
                   </TooltipContent>
                 </Tooltip>
 
@@ -144,7 +144,7 @@ export default function RootLayout({ children }: { children: JSX.Element }) {
             </TooltipProvider>
           </Sidebar>
         </div>
-        {children}
+        <Providers>{children}</Providers>
         <Toaster />
       </body>
     </html>

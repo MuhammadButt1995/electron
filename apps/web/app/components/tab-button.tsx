@@ -12,7 +12,11 @@ type TabContentProps = {
 
 const TabButton = ({ title, statuses }: TabContentProps) => {
   const allConnected = statuses.every(
-    (status) => status === 'CONNECTED' || status === 'RELIABLE'
+    (status) =>
+      status === 'CONNECTED' ||
+      status === 'RELIABLE' ||
+      status === 'LOW' ||
+      parseInt(status.split(' ')[0], 10) >= 7
   );
   const dynamicClasses = cn({
     'text-brand-green-700 dark:text-brand-green-500': allConnected === true,

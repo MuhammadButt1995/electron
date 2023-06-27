@@ -20,12 +20,10 @@ type Tool = {
 const ToolsPage = async () => {
   const toolData: Promise<Tool[]> = getAllTools();
   const tools = await toolData;
-  const tags = [...new Set(tools.flatMap((tool: Tool) => tool.tags))];
+  const filteredTools = tools.filter((tool) => tool.tool_type !== 'Data');
+  const tags = [...new Set(filteredTools.flatMap((tool: Tool) => tool.tags))];
   const types = [
-    ...new Set([
-      'Non-Automated',
-      ...tools.flatMap((tool: Tool) => tool.tool_type),
-    ]),
+    ...new Set([...filteredTools.flatMap((tool: Tool) => tool.tool_type)]),
   ];
 
   return (
@@ -42,14 +40,8 @@ const ToolsPage = async () => {
       </div>
 
       <Card className='mt-4'>
-        <CardHeader className='h-16'>
-          <CardTitle>Click on a tool open it up.</CardTitle>
-          <CardDescription>
-            Hover over a tool to see its description.
-          </CardDescription>
-        </CardHeader>
         <CardContent>
-          <ToolDashboard tools={tools} tags={tags} types={types} />
+          <ToolDashboard tools={filteredTools} tags={tags} types={types} />
         </CardContent>
       </Card>
     </div>

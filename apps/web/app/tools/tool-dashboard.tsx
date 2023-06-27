@@ -36,10 +36,7 @@ const ToolDashboard = ({ tools, tags, types }: Props) => {
     useSelection();
 
   const { selectedItems: selectedTypes, onSelect: setSelectedTypes } =
-    useMutuallyExclusiveSelection(
-      ['Non-Automated'],
-      ['Non-Automated', 'Auto-Enabled']
-    );
+    useSelection();
 
   const filteredTools = useFilteredTools(
     tools,
@@ -52,18 +49,7 @@ const ToolDashboard = ({ tools, tags, types }: Props) => {
   const router = useRouter();
 
   const onToolClick = (tool: Tool) => {
-    if (tool.tool_type === 'Auto-Enabled') {
-      toast({
-        title: `The ${tool.name} tool is Auto-Enabled!`,
-        description:
-          "This tool doesn't have a specific page since it's always running in the background!",
-        action: <ToastAction altText='Got it!'>Got it!</ToastAction>,
-        duration: 8000,
-      });
-    } else {
-      // Otherwise, navigate to the tool's specific page
-      router.replace(`/tools/${tool.name}`);
-    }
+    console.log('clicked');
   };
 
   return (
@@ -87,7 +73,7 @@ const ToolDashboard = ({ tools, tags, types }: Props) => {
           onSelectedChange={setSelectedTags}
         />
       </div>
-      <ScrollArea className='h-[230px] w-fit pr-4'>
+      <ScrollArea className='h-[280px] w-[390px] pr-6'>
         <ToolGrid tools={filteredTools} onToolClick={onToolClick} />
       </ScrollArea>
     </div>

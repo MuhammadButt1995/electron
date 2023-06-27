@@ -70,4 +70,12 @@ app.on('ready', async () => {
   ipcMain.on('onADStatusChange', createStatusChangeHandler('AD'));
   ipcMain.on('onDomainStatusChange', createStatusChangeHandler('domain'));
   ipcMain.on('onWiFiStatusChange', createStatusChangeHandler('wifi'));
+  ipcMain.on(
+    'onLDAPPasswordExpiresInChange',
+    createStatusChangeHandler('ldap-password')
+  );
+  ipcMain.on(
+    'onDiskSpaceStatusChange',
+    createStatusChangeHandler('disk-space')
+  );
 });

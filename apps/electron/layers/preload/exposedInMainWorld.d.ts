@@ -3,4 +3,6 @@ interface Window {
     readonly onADStatusChange: (state: import("C:/Users/Sunny/Desktop/Repo/Yerba/turbo/apps/electron/layers/preload/src/index").ConnectionStatus) => void;
     readonly onDomainStatusChange: (state: import("C:/Users/Sunny/Desktop/Repo/Yerba/turbo/apps/electron/layers/preload/src/index").ConnectionStatus) => void;
     readonly onWiFiStatusChange: (state: import("C:/Users/Sunny/Desktop/Repo/Yerba/turbo/apps/electron/layers/preload/src/index").WiFiStatus) => void;
+    readonly onLDAPPasswordExpiresInChange: (state: string) => void;
+    readonly onDiskSpaceStatusChange: (state: import("C:/Users/Sunny/Desktop/Repo/Yerba/turbo/apps/electron/layers/preload/src/index").DiskSpaceState) => void;
 }

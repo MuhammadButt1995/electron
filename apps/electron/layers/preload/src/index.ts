@@ -12,6 +12,8 @@ export type ConnectionStatus =
 
 export type WiFiStatus = 'LOADING' | 'RELIABLE' | 'DECENT' | 'SLOW' | 'ERROR';
 
+export type DiskSpaceState = 'LOADING' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ERROR';
+
 // Expose version number to renderer
 contextBridge.exposeInMainWorld(
   'onInternetStatusChange',
@@ -29,6 +31,16 @@ contextBridge.exposeInMainWorld(
 
 contextBridge.exposeInMainWorld('onWiFiStatusChange', (state: WiFiStatus) =>
   ipcRenderer.send('onWiFiStatusChange', state)
+);
+
+contextBridge.exposeInMainWorld(
+  'onLDAPPasswordExpiresInChange',
+  (state: string) => ipcRenderer.send('onLDAPPasswordExpiresInChange', state)
+);
+
+contextBridge.exposeInMainWorld(
+  'onDiskSpaceStatusChange',
+  (state: DiskSpaceState) => ipcRenderer.send('onDiskSpaceStatusChange', state)
 );
 
 /**

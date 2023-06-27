@@ -79,6 +79,24 @@ export const createTray = (mainWindow: BrowserWindow) => {
       ),
       sublabel: '',
     },
+    { type: 'separator' },
+    {
+      id: 'ldap-password',
+      label: `Password Expires In`,
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, '../assets/loading.png')
+      ),
+      sublabel: '',
+    },
+    { type: 'separator' },
+    {
+      id: 'disk-space',
+      label: `Disk Space Usage`,
+      icon: nativeImage.createFromPath(
+        path.join(__dirname, '../assets/loading.png')
+      ),
+      sublabel: '',
+    },
   ];
 
   trayMenu = Menu.buildFromTemplate(buildMenuItems()); // Save the menu to trayMenu
@@ -95,6 +113,8 @@ export type ConnectionStatus =
 
 export type WiFiStatus = 'LOADING' | 'RELIABLE' | 'DECENT' | 'SLOW' | 'ERROR';
 
+export type DiskSpaceStatus = 'LOADING' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ERROR';
+
 type IconPaths = {
   loading: string;
   check: string;
@@ -105,7 +125,7 @@ type IconPaths = {
 export const updateTrayIcon = () => {
   if (!tray || !trayMenu) return;
 
-  const statusItemIds = ['internet', 'AD', 'domain']; // Add the ids of your status items here
+  const statusItemIds = ['internet', 'AD', 'domain', 'ldap-password']; // Add the ids of your status items here
 
   const allConnected = trayMenu.items
     .filter((item) => statusItemIds.includes(item.id)) // Only consider status items
@@ -124,7 +144,7 @@ export const updateTrayIcon = () => {
 };
 
 export const updateTrayMenu = (
-  data: ConnectionStatus | WiFiStatus,
+  data: any,
   menuItemId: string,
   icons: IconPaths
 ) => {
@@ -137,37 +157,41 @@ export const updateTrayMenu = (
     let iconPath: string;
     let sublabel: string;
 
-    switch (data) {
-      case 'LOADING':
-        iconPath = icons.loading;
-        sublabel = 'Loading...';
-        break;
-      case 'CONNECTED':
-        iconPath = icons.check;
-        sublabel = 'Connected';
-        break;
-      case 'NOT CONNECTED':
-        iconPath = icons.warning;
-        sublabel = 'Not Connected';
-        break;
-      case 'RELIABLE':
-        iconPath = icons.check;
-        sublabel = 'Reliable';
-        break;
-      case 'DECENT':
-        iconPath = icons.warning;
-        sublabel = 'Decent';
-        break;
-      case 'SLOW':
-        iconPath = icons.x_mark;
-        sublabel = 'Slow';
-        break;
-      case 'ERROR':
-        iconPath = icons.x_mark;
-        sublabel = 'Error';
-        break;
-      default:
-        return item;
+    console.log(data);
+
+    const parsedData = parseInt(data.split(' ')[0], 10);
+
+    type StatusMapType = {
+      [key: string]: { icon: string; label: string };
+    };
+
+    const statusMap: StatusMapType = {
+      LOADING: { icon: icons.loading, label: 'Loading...' },
+      CONNECTED: { icon: icons.check, label: 'Connected' },
+      'NOT CONNECTED': { icon: icons.warning, label: 'Not Connected' },
+      RELIABLE: { icon: icons.check, label: 'Reliable' },
+      DECENT: { icon: icons.warning, label: 'Decent' },
+      SLOW: { icon: icons.x_mark, label: 'Slow' },
+      LOW: { icon: icons.check, label: 'Low' },
+      MEDIUM: { icon: icons.warning, label: 'Medium' },
+      HIGH: { icon: icons.x_mark, label: 'High' },
+      ERROR: { icon: icons.x_mark, label: 'Error' },
+    };
+
+    if (Object.prototype.hasOwnProperty.call(statusMap, data)) {
+      iconPath = statusMap[data].icon;
+      sublabel = statusMap[data].label;
+    } else if (parsedData >= 7) {
+      iconPath = icons.check;
+      sublabel = data;
+    } else if (parsedData < 7 && parsedData >= 3) {
+      iconPath = icons.warning;
+      sublabel = data;
+    } else if (parsedData < 3 || data.split(' ')[0] === 'Today') {
+      iconPath = icons.x_mark;
+      sublabel = data;
+    } else {
+      return item;
     }
 
     return {
