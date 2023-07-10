@@ -6,18 +6,24 @@ import { useOs } from '@mantine/hooks';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 
 export const ADStatusWindowsResponse = z.object({
-  azureAdJoined: z.boolean(),
-  domainJoined: z.boolean(),
-  isBound: z.union([z.literal('BOUND'), z.literal('NOT BOUND')]),
-  description: z.string(),
-  rating: z.union([z.literal('ok'), z.literal('error')]),
+  success: z.boolean(),
+  data: z.object({
+    azureAdJoined: z.boolean(),
+    domainJoined: z.boolean(),
+    isBound: z.union([z.literal('BOUND'), z.literal('NOT BOUND')]),
+    description: z.string(),
+    rating: z.union([z.literal('ok'), z.literal('error')]),
+  }),
 });
 
 export const ADStatusMacResponse = z.object({
-  ad_bind: z.boolean(),
-  isBound: z.union([z.literal('BOUND'), z.literal('NOT BOUND')]),
-  description: z.string(),
-  rating: z.union([z.literal('ok'), z.literal('error')]),
+  success: z.boolean(),
+  data: z.object({
+    ad_bind: z.boolean(),
+    isBound: z.union([z.literal('BOUND'), z.literal('NOT BOUND')]),
+    description: z.string(),
+    rating: z.union([z.literal('ok'), z.literal('error')]),
+  }),
 });
 
 export type ADStatusResponse =

@@ -5,10 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 
 export const PasswordDataResponse = z.object({
-  daysLeft: z.string(),
-  datetime: z.string(),
-  description: z.string(),
-  rating: z.union([z.literal('ok'), z.literal('warn'), z.literal('error')]),
+  success: z.boolean(),
+  data: z.object({
+    daysLeft: z.string(),
+    datetime: z.string(),
+    description: z.string(),
+    rating: z.union([z.literal('ok'), z.literal('warn'), z.literal('error')]),
+  }),
 });
 
 const url = 'http://localhost:8000/tools/password-data';

@@ -2,7 +2,16 @@
 
 'use client';
 
-import { Wifi, Signal, Lock, Laptop, KeyRound, HardDrive } from 'lucide-react';
+import {
+  Wifi,
+  Signal,
+  Lock,
+  Laptop,
+  KeyRound,
+  HardDrive,
+  HelpCircle,
+  Network,
+} from 'lucide-react';
 import { useEffect } from 'react';
 import { useOs, useNetwork } from '@mantine/hooks';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,8 +21,23 @@ import { useTrustedNetworkStatus } from '@/hooks/useQueryHooks/useTrustedNetwork
 import { useADStatus } from '@/hooks/useQueryHooks/useADStatus';
 import { usePasswordData } from './hooks/useQueryHooks/usePasswordData';
 import { useDiskSpace } from './hooks/useQueryHooks/useDiskData';
+import { useNetworkAdapters } from './hooks/useQueryHooks/useNetworkAdapters';
 
 import FminfoCard, { FminfoCardProps } from '@/components/fminfo-card';
+
+import {
+  DataPopoverButton,
+  DataPopoverButtonProps,
+} from './data-popover-button';
+import {
+  StaticPopoverButton,
+  StaticPopoverButtonProps,
+} from './static-popover-button';
+
+import { Skeleton } from './components/ui/skeleton';
+import { Label } from './components/ui/label';
+import ClipboardText from './components/clipboard-text';
+import { Input } from './components/ui/input';
 
 const HomePage = () => {
   const IS_CONNECTED_TO_INTERNET = useNetwork().online;
@@ -28,6 +52,7 @@ const HomePage = () => {
   const ADStatusQuery = useADStatus();
   const passwordDataQuery = usePasswordData();
   const diskSpaceQuery = useDiskSpace();
+  const networkAdapterQuery = useNetworkAdapters();
 
   const serverErrorDescription =
     "Whoops! We couldn't fetch this data! Please try restarting the Talos app.";
@@ -86,19 +111,19 @@ const HomePage = () => {
       rating: IS_TRUSTED_NETWORK_LOADING
         ? 'loading'
         : IS_CONNECTED_TO_INTERNET
-        ? trustedNetworkQuery?.data?.rating ?? 'error'
+        ? trustedNetworkQuery?.data?.data.rating ?? 'error'
         : 'error',
       title: 'TRUSTED NETWORK',
       value: IS_TRUSTED_NETWORK_LOADING
         ? 'LOADING'
         : IS_CONNECTED_TO_INTERNET
-        ? trustedNetworkQuery?.data?.status ?? 'ERROR'
+        ? trustedNetworkQuery?.data?.data.status ?? 'ERROR'
         : 'ERROR',
       icon: <Lock className='mr-2 h-4 w-4' />,
       cardBody: (
         <p className='text-muted-foreground w-7/12 text-xs'>
           {IS_CONNECTED_TO_INTERNET
-            ? trustedNetworkQuery?.data?.description ??
+            ? trustedNetworkQuery?.data?.data.description ??
               (trustedNetworkQuery?.isError && serverErrorDescription)
             : 'Please connect to the internet to see your connection to a trusted network.'}
         </p>
@@ -113,15 +138,15 @@ const HomePage = () => {
     return {
       rating: IS_AD_STATUS_LOADING
         ? 'loading'
-        : ADStatusQuery?.data?.rating ?? 'error',
+        : ADStatusQuery?.data?.data.rating ?? 'error',
       title: IS_MACOS ? 'ON-PREM ACTIVE DIRECTORY' : 'AZURE ACTIVE DIRECTORY',
       value: IS_AD_STATUS_LOADING
         ? 'LOADING'
-        : ADStatusQuery?.data?.isBound ?? 'ERROR',
+        : ADStatusQuery?.data?.data.isBound ?? 'ERROR',
       icon: <Laptop className='mr-2 h-4 w-4' />,
       cardBody: (
         <p className='text-muted-foreground w-7/12 text-xs'>
-          {ADStatusQuery?.data?.description ??
+          {ADStatusQuery?.data?.data.description ??
             (ADStatusQuery?.isError && serverErrorDescription)}
         </p>
       ),
@@ -133,28 +158,28 @@ const HomePage = () => {
       passwordDataQuery.isLoading || passwordDataQuery.isFetching;
 
     const IS_ON_TRUSTED_NETWORK =
-      trustedNetworkQuery?.data?.status === 'ZPA' ||
-      trustedNetworkQuery?.data?.status === 'VPN';
+      trustedNetworkQuery?.data?.data.status === 'ZPA' ||
+      trustedNetworkQuery?.data?.data.status === 'VPN';
     // const IS_CONNECTED_AND_TRUSTED = IS_CONNECTED_TO_INTERNET && IS_ON_TRUSTED_NETWORK;
     const IS_CONNECTED_AND_TRUSTED = IS_CONNECTED_TO_INTERNET && true;
     return {
       rating: IS_PASSWORD_DATA_LOADING
         ? 'loading'
         : IS_CONNECTED_AND_TRUSTED
-        ? passwordDataQuery?.data?.rating ?? 'error'
+        ? passwordDataQuery?.data?.data.rating ?? 'error'
         : 'error',
       title: 'PASSWORD EXPIRES IN',
       value: IS_PASSWORD_DATA_LOADING
         ? 'LOADING'
         : IS_CONNECTED_AND_TRUSTED
-        ? passwordDataQuery?.data?.daysLeft ?? 'ERROR'
+        ? passwordDataQuery?.data?.data.daysLeft ?? 'ERROR'
         : 'ERROR',
       icon: <KeyRound className='mr-2 h-4 w-4' />,
       cardBody: (
         <p className='text-muted-foreground w-7/12 text-xs'>
           {IS_CONNECTED_TO_INTERNET
             ? IS_CONNECTED_AND_TRUSTED
-              ? passwordDataQuery?.data?.description ??
+              ? passwordDataQuery?.data?.data.description ??
                 (passwordDataQuery?.isError && serverErrorDescription)
               : 'Please connect to a trusted network to see your current password data.'
             : 'Please connect to the internet to see your current password data.'}
@@ -170,20 +195,122 @@ const HomePage = () => {
     return {
       rating: IS_DISK_SPACE_LOADING
         ? 'loading'
-        : diskSpaceQuery?.data?.rating ?? 'error',
+        : diskSpaceQuery?.data?.data.rating ?? 'error',
       title: 'DISK SPACE HEALTH',
       value: IS_DISK_SPACE_LOADING
         ? 'LOADING'
-        : diskSpaceQuery?.data?.diskSpaceUsage ?? 'ERROR',
+        : diskSpaceQuery?.data?.data.diskSpaceUsage ?? 'ERROR',
       icon: <HardDrive className='mr-2 h-4 w-4' />,
       cardBody: (
         <p className='text-muted-foreground w-7/12 text-xs'>
-          {diskSpaceQuery?.data?.description ??
+          {diskSpaceQuery?.data?.data.description ??
             (diskSpaceQuery?.isError && serverErrorDescription)}
         </p>
       ),
     };
   };
+
+  const getNetworkAdaptersContentProps = (): DataPopoverButtonProps => {
+    const IS_NETWORK_ADAPTER_LOADING =
+      networkAdapterQuery.isLoading || networkAdapterQuery.isFetching;
+    const IS_NETWORK_ADAPTER_LOADED = networkAdapterQuery.isSuccess;
+
+    let content: React.ReactNode;
+
+    if (IS_NETWORK_ADAPTER_LOADING) {
+      content = (
+        <div className='flex items-center space-x-4'>
+          <div className='space-y-2'>
+            <Skeleton className='h-4 w-[250px]' />
+            <Skeleton className='h-4 w-[200px]' />
+          </div>
+        </div>
+      );
+    }
+
+    if (IS_NETWORK_ADAPTER_LOADED) {
+      content = (
+        <ScrollArea>
+          {Object.entries(
+            networkAdapterQuery.data.data.activeAdapters || {}
+          ).map(([key, value]) => (
+            <div key={key} className='grid grid-cols-2 items-center gap-4'>
+              <Label key={key}>{key}</Label>
+              <ClipboardText text={value} classNames='h-8' />
+            </div>
+          ))}
+        </ScrollArea>
+      );
+    }
+
+    return {
+      icon: <Network className='h-4 w-4' />,
+      btnClasses: 'w-10 rounded-full p-0',
+      fetchData: networkAdapterQuery.refetch,
+      children: (
+        <div className='grid gap-4'>
+          <div className='space-y-2'>
+            <h4 className='font-medium leading-none'>
+              Your active network adapters
+            </h4>
+            <p className='text-muted-foreground w-72 text-sm'>
+              Your IP Address is will usually correspond to the
+              &quot;Wi-Fi&quot; or &quot;Ethernet&quot; adapter.
+            </p>
+          </div>
+          <div className='grid gap-2'>{content}</div>
+        </div>
+      ),
+    };
+  };
+
+  const getWifiDataContentProps = (): StaticPopoverButtonProps => ({
+    icon: <HelpCircle className='h-4 w-4' />,
+    btnClasses: 'absolute bottom-3 right-5 w-10 rounded-full p-0',
+    children: (
+      <div className='grid gap-4'>
+        <div className='space-y-2'>
+          <h4 className='font-medium leading-none'>
+            How we&apos;re measuring your Wi-Fi signal
+          </h4>
+          <p className='text-muted-foreground w-72 text-sm'>
+            We&apos;re using a weighted average from analyzing these data points
+            from your machine:
+          </p>
+        </div>
+        <div className='grid gap-2'>
+          <div className='grid grid-cols-3 items-center gap-4'>
+            <Label>Signal Strength</Label>
+            <Input
+              disabled
+              value={`${wifiDataQuery?.data?.data.signal.value}%`}
+              className='col-span-2 h-8'
+            />
+          </div>
+          <div className='grid grid-cols-3 items-center gap-4'>
+            <Label>Radio Type</Label>
+            <Input
+              disabled
+              value={wifiDataQuery?.data?.data.radioType.value}
+              className='col-span-2 h-8'
+            />
+          </div>
+          <div className='grid grid-cols-3 items-center gap-4'>
+            <Label>Channel</Label>
+            <Input
+              disabled
+              value={wifiDataQuery?.data?.data.channel.value}
+              className='col-span-2 h-8'
+            />
+          </div>
+          <div className='mt-4 grid grid-cols-3 items-center gap-4'>
+            <Label className='font-bold'>Overall Rating</Label>
+            <Label>{wifiDataQuery?.data?.data.overall}</Label>
+          </div>
+        </div>
+      </div>
+    ),
+  });
 
   return (
     <div className='p-6'>
@@ -211,20 +338,30 @@ const HomePage = () => {
 
         <TabsContent value='network'>
           <Tabs defaultValue='internal' className='mt-4'>
-            <TabsList className='grid w-fit grid-cols-2'>
-              <TabsTrigger value='internal'>
-                <div>Internal</div>
-              </TabsTrigger>
-              <TabsTrigger value='external'>
-                <div>External</div>
-              </TabsTrigger>
-            </TabsList>
+            <div className='flex items-center justify-start space-x-10'>
+              <TabsList className='grid w-fit grid-cols-2'>
+                <TabsTrigger value='internal'>
+                  <div>Internal</div>
+                </TabsTrigger>
+                <TabsTrigger value='external'>
+                  <div>External</div>
+                </TabsTrigger>
+              </TabsList>
+              {IS_CONNECTED_TO_INTERNET && (
+                <DataPopoverButton {...getNetworkAdaptersContentProps()} />
+              )}
+            </div>
 
             <ScrollArea className='mt-4 h-64 pr-4'>
               <TabsContent value='internal'>
                 <div className='grid grid-cols-1 gap-4'>
                   <FminfoCard {...getInternetConnectionCardProps()} />
-                  <FminfoCard {...getWifiSignalCardProps()} />
+
+                  <FminfoCard {...getWifiSignalCardProps()}>
+                    {IS_CONNECTED_TO_INTERNET && (
+                      <StaticPopoverButton {...getWifiDataContentProps()} />
+                    )}
+                  </FminfoCard>
                 </div>
               </TabsContent>
 

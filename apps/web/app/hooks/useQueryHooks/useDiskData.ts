@@ -5,16 +5,19 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 
 export const DiskSpaceResponse = z.object({
-  totalDiskSize: z.string(),
-  currentDiskUsage: z.string(),
-  remainingDiskSpace: z.string(),
-  diskSpaceUsage: z.union([
-    z.literal('LOW'),
-    z.literal('MEDIUM'),
-    z.literal('HIGH'),
-  ]),
-  description: z.string(),
-  rating: z.union([z.literal('ok'), z.literal('warn'), z.literal('error')]),
+  success: z.boolean(),
+  data: z.object({
+    totalDiskSize: z.string(),
+    currentDiskUsage: z.string(),
+    remainingDiskSpace: z.string(),
+    diskSpaceUsage: z.union([
+      z.literal('LOW'),
+      z.literal('MEDIUM'),
+      z.literal('HIGH'),
+    ]),
+    description: z.string(),
+    rating: z.union([z.literal('ok'), z.literal('warn'), z.literal('error')]),
+  }),
 });
 
 const url = 'http://localhost:8000/tools/disk-usage';
