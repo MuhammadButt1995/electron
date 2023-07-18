@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import {
   Popover,
   PopoverContent,
@@ -11,6 +13,7 @@ export type DataPopoverButtonProps = {
   btnClasses: string;
   children: React.ReactNode;
   fetchData: () => void;
+  disabled?: boolean;
 };
 
 export const DataPopoverButton = ({
@@ -18,12 +21,14 @@ export const DataPopoverButton = ({
   btnClasses,
   children,
   fetchData,
+  disabled = false,
 }: DataPopoverButtonProps) => (
   <Popover>
     <PopoverTrigger asChild>
       <Button
         variant='ghost'
         className={btnClasses}
+        disabled={disabled}
         onClick={(event) => {
           // Check if the popover is open before running fetchData
           if (event.currentTarget.getAttribute('data-state') === 'open') {

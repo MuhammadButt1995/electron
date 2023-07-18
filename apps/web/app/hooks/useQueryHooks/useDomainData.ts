@@ -5,21 +5,22 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 import { SucessfulAPIResponseSchema } from '@/types/api';
 
-export const NetworkAdaptersResponse = SucessfulAPIResponseSchema.and(
+export const DomainDataResponse = SucessfulAPIResponseSchema.and(
   z.object({
     data: z.object({
-      activeAdapters: z.record(z.string()),
-      inactiveAdapters: z.record(z.string()),
+      loggedOnDomain: z.string(),
+      loggedOnUser: z.string(),
+      lastLogonTime: z.string(),
     }),
   })
 );
 
-const url = 'http://localhost:8000/tools/network-adapters';
+const url = 'http://localhost:8000/tools/domain-data';
 
-export const useNetworkAdapters = () => {
-  const networkResponseQuery = useQuery({
+export const useDomainData = () => {
+  const domainDataQuery = useQuery({
     queryKey: [url],
-    queryFn: () => fetchAndParseData(url, NetworkAdaptersResponse),
+    queryFn: () => fetchAndParseData(url, DomainDataResponse),
     enabled: false,
     refetchOnMount: false,
     refetchInterval: false,
@@ -27,5 +28,5 @@ export const useNetworkAdapters = () => {
     useErrorBoundary: true,
   });
 
-  return networkResponseQuery;
+  return domainDataQuery;
 };

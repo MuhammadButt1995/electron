@@ -1,3 +1,5 @@
+/* eslint-disable react/require-default-props */
+
 import {
   Popover,
   PopoverContent,
@@ -10,16 +12,18 @@ export type StaticPopoverButtonProps = {
   icon: React.ReactNode;
   btnClasses: string;
   children: React.ReactNode;
+  disabled?: boolean;
 };
 
 export const StaticPopoverButton = ({
   icon,
   btnClasses,
   children,
+  disabled = false,
 }: StaticPopoverButtonProps) => (
   <Popover>
     <PopoverTrigger asChild>
-      <Button variant='ghost' className={btnClasses}>
+      <Button variant='ghost' className={btnClasses} disabled={disabled}>
         {icon}
       </Button>
     </PopoverTrigger>

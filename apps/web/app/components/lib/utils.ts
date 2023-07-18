@@ -6,7 +6,3 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export function getFormattedDT() {
-  return dayjs().format('ddd, MMM D, YYYY h:mm A');
-}

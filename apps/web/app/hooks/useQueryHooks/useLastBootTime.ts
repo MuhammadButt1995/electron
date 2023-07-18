@@ -5,22 +5,22 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 import { FmInfoAPIResponseSchema } from '@/types/api';
 
-export const PasswordDataResponse = FmInfoAPIResponseSchema.and(
+export const LastBootTimeResponse = FmInfoAPIResponseSchema.and(
   z.object({
     data: z.object({
-      daysLeft: z.string(),
-      datetime: z.string(),
+      lastBootTime: z.string(),
+      daysSinceBoot: z.string(),
     }),
   })
 );
 
-const url = 'http://localhost:8000/tools/password-data';
+const url = 'http://localhost:8000/tools/last-boottime';
 const ONE_DAY_IN_MS = 86400000;
 
-export const usePasswordData = () => {
-  const passwordDataQuery = useQuery({
+export const useLastBootTime = () => {
+  const lastBootTimeQuery = useQuery({
     queryKey: [url],
-    queryFn: () => fetchAndParseData(url, PasswordDataResponse),
+    queryFn: () => fetchAndParseData(url, LastBootTimeResponse),
     refetchOnMount: false,
     refetchInterval: ONE_DAY_IN_MS,
     refetchIntervalInBackground: true,
@@ -29,5 +29,5 @@ export const usePasswordData = () => {
     networkMode: 'always',
   });
 
-  return passwordDataQuery;
+  return lastBootTimeQuery;
 };

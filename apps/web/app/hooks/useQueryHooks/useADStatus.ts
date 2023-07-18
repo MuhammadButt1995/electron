@@ -4,28 +4,28 @@ import { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
 import { useOs } from '@mantine/hooks';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
+import { FmInfoAPIResponseSchema } from '@/types/api';
 
-export const ADStatusWindowsResponse = z.object({
-  success: z.boolean(),
-  data: z.object({
-    azureAdJoined: z.boolean(),
-    domainJoined: z.boolean(),
-    isBound: z.union([z.literal('BOUND'), z.literal('NOT BOUND')]),
-    description: z.string(),
-    rating: z.union([z.literal('ok'), z.literal('error')]),
-  }),
-});
+const IsBoundEnum = z.union([z.literal('BOUND'), z.literal('NOT BOUND')]);
 
-export const ADStatusMacResponse = z.object({
-  success: z.boolean(),
-  data: z.object({
-    ad_bind: z.boolean(),
-    isBound: z.union([z.literal('BOUND'), z.literal('NOT BOUND')]),
-    description: z.string(),
-    rating: z.union([z.literal('ok'), z.literal('error')]),
-  }),
-});
+export const ADStatusWindowsResponse = FmInfoAPIResponseSchema.and(
+  z.object({
+    data: z.object({
+      azureAdJoined: z.boolean(),
+      domainJoined: z.boolean(),
+      isBound: IsBoundEnum,
+    }),
+  })
+);
 
+export const ADStatusMacResponse = FmInfoAPIResponseSchema.and(
+  z.object({
+    data: z.object({
+      ad_bind: z.boolean(),
+      isBound: IsBoundEnum,
+    }),
+  })
+);
 export type ADStatusResponse =
   | z.infer<typeof ADStatusWindowsResponse>
   | z.infer<typeof ADStatusMacResponse>;
@@ -55,9 +55,11 @@ export const useADStatus = () => {
         os === 'macos' ? ADStatusMacResponse : ADStatusWindowsResponse
       ),
     refetchOnMount: false,
+    refetchOnWindowFocus: false,
     refetchInterval: 600000,
     refetchIntervalInBackground: true,
-    refetchOnWindowFocus: false,
+    useErrorBoundary: true,
+    networkMode: 'always',
   });
 
   return ADStatusQuery;

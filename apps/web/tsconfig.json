@@ -16,7 +16,8 @@
       "@/hooks/*": ["./app/hooks/*"],
       "@/lib/*": ["./app/lib/*"],
       "@/styles/*": ["./app/styles/*"],
-      "@/store/*": ["./app/store/*"]
+      "@/store/*": ["./app/store/*"],
+      "@/types/*": ["./app/@types/*"]
     }
   }
 }
