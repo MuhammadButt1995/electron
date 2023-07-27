@@ -43,6 +43,10 @@ export const QueryRunner = ({ children }: Props) => {
     (state) => state.isConnectedToInternet
   );
 
+  const IS_ON_TRUSTED_NETWORK = useGlobalStateStore(
+    (state) => state.isOnTrustedNetwork
+  );
+
   const wifiQuery = useWiFiData();
   const networkQuery = useTrustedNetworkStatus();
   const adQuery = useADStatus();
@@ -70,7 +74,8 @@ export const QueryRunner = ({ children }: Props) => {
 
   if (
     adQuery?.data?.data?.rating === 'ok' &&
-    passwordQuery?.data?.data?.rating === 'ok'
+    passwordQuery?.data?.data?.rating === 'ok' &&
+    IS_ON_TRUSTED_NETWORK
   ) {
     setIdentityServicesStatus(true);
   } else {
