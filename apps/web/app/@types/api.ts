@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export const SucessfulAPIResponseSchema = z.object({
   success: z.literal(true),
-  data: z.record(z.any()),
   timestamp: z.string(),
 });
 

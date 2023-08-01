@@ -7,18 +7,17 @@ import { Button } from '@/components/ui/button';
 
 type ClipboardCardProps = {
   text: string;
-  classNames?: string;
 };
 
-const ClipboardText = ({ text, classNames }: ClipboardCardProps) => {
+const ClipboardText = ({text}: ClipboardCardProps) => {
   const clipboard = useClipboard({ timeout: 800 });
 
   return (
-    <div className={classNames}>
+    <div>
       <Button
         variant='link'
         onClick={() => clipboard.copy(text)}
-        className={`hover:text-primary ${clipboard.copied && 'text-primary'}`}
+        className={`hover:text-brand-teal ${clipboard.copied && 'text-brand-teal'}`}
       >
         {clipboard.copied ? 'Copied' : text}
       </Button>

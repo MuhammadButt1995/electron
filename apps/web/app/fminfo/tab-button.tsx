@@ -1,4 +1,4 @@
-import { CheckCircle, AlertTriangle } from 'lucide-react';
+import { Check, AlertTriangle } from 'lucide-react';
 
 type TabButtonProps = {
   name: string;
@@ -7,13 +7,12 @@ type TabButtonProps = {
 
 const TabButton = ({ name, allOk }: TabButtonProps) => (
   <div className='flex flex-row'>
-    {name}
-
     {allOk ? (
-      <CheckCircle className='text-brand-green-700 dark:text-brand-green-500 ml-1 h-2 w-2' />
+      <Check className='text-brand-teal mr-2 h-4 w-4' />
     ) : (
-      <AlertTriangle className='text-brand-yellow-700 dark:text-brand-yellow-500 ml-1 h-2 w-2' />
+      <AlertTriangle className='text-brand-yellow mr-2 h-4 w-4' />
     )}
+    {name}
   </div>
 );
 

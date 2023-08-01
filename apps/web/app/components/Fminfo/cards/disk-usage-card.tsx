@@ -3,10 +3,10 @@
 
 'use client';
 
-import { HardDrive } from 'lucide-react';
+import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
+import CardPopoverContent from '@/components/Fminfo/card-popover-content';
+import { Separator } from '@/components/ui/separator';
 import { useDiskSpace } from '@/hooks/useQueryHooks/useDiskData';
-import FminfoCard, { FminfoRating } from '@/components/Fminfo/fminfo-card';
-import FminfoDescriptionSkeleton from './fminfo-description-skeleton';
 
 type DiskUsageCardProps = {
   queryErrorMessage: string;
@@ -22,28 +22,28 @@ const DiskUsageCard = ({ queryErrorMessage }: DiskUsageCardProps) => {
     rating: IS_DISK_SPACE_LOADING
       ? 'loading'
       : (diskSpaceQuery?.data?.data.rating as FminfoRating) ?? 'error',
-    title: 'DISK UTILIZATION HEALTH',
+    title: 'Disk Space Health',
     value: IS_DISK_SPACE_LOADING
       ? 'LOADING'
       : diskSpaceQuery?.data?.data.diskUtilizationHealth ?? 'ERROR',
-    icon: <HardDrive className='mr-2 h-4 w-4' />,
-    cardBody: IS_DISK_SPACE_LOADING ? (
-      <FminfoDescriptionSkeleton />
-    ) : (
-      <>
-        <p className='text-muted-foreground w-7/12 text-xs'>
+    lastUpdated: diskSpaceQuery?.data?.timestamp ?? '',
+  };
+
+  return (
+    <InfoCard {...cardProps}>
+      <CardPopoverContent
+        isLoading={IS_DISK_SPACE_LOADING}
+        lastUpdated={cardProps.lastUpdated}
+      >
+        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
+        <Separator />
+        <p className='pt-2 text-sm'>
           {diskSpaceQuery?.data?.data.description ??
             (diskSpaceQuery?.isError && queryErrorMessage)}
         </p>
-
-        <p className='text-muted-foreground w-7/12 text-xs'>
-          Last Updated: {diskSpaceQuery?.data?.timestamp ?? ''}
-        </p>
-      </>
-    ),
-  };
-
-  return <FminfoCard {...cardProps} />;
+      </CardPopoverContent>
+    </InfoCard>
+  );
 };
 
 export default DiskUsageCard;

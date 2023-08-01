@@ -8,8 +8,8 @@ import { SucessfulAPIResponseSchema } from '@/types/api';
 export const NetworkAdaptersResponse = SucessfulAPIResponseSchema.and(
   z.object({
     data: z.object({
-      activeAdapters: z.record(z.string()),
-      inactiveAdapters: z.record(z.string()),
+      active_adapters: z.record(z.string()),
+      inactive_adapters: z.record(z.string()),
     }),
   })
 );
@@ -20,11 +20,12 @@ export const useNetworkAdapters = () => {
   const networkResponseQuery = useQuery({
     queryKey: [url],
     queryFn: () => fetchAndParseData(url, NetworkAdaptersResponse),
-    enabled: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
     refetchInterval: false,
-    refetchOnWindowFocus: 'always',
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
     useErrorBoundary: true,
+    networkMode: 'always',
   });
 
   return networkResponseQuery;

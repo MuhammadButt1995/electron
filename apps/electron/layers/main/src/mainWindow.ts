@@ -4,8 +4,8 @@ import { format } from 'url';
 
 async function createWindow() {
   const browserWindow = new BrowserWindow({
-    width: 475,
-    height: 550,
+    width: 560,
+    height: 560,
     movable: false, // The window should not be movable
     resizable: false, // The window should not be resizable
     show: false, // Create the window as hidden

@@ -18,7 +18,7 @@ export const TrustedNetworkStatusResponse = FmInfoAPIResponseSchema.and(
       status: z.union([
         z.literal('ZPA'),
         z.literal('VPN'),
-        z.literal('NOT CONNECTED'),
+        z.literal('DISCONNECTED'),
       ]),
     }),
   })
@@ -48,7 +48,7 @@ export const useTrustedNetworkStatus = () => {
 
   const trustedNetworkStatusResponse: TrustedNetworkType =
     trustedNetworkQuery.isSuccess
-      ? trustedNetworkQuery.data.data.status !== 'NOT CONNECTED'
+      ? trustedNetworkQuery.data.data.status !== 'DISCONNECTED'
         ? trustedNetworkQuery.data.data.status
         : undefined
       : undefined;

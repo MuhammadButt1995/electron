@@ -4,21 +4,22 @@
 
 'use client';
 
-import { useEffect } from 'react';
-import { KeyRound, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import { usePasswordData } from '@/hooks/useQueryHooks/usePasswordData';
-import FminfoCard, { FminfoRating } from '@/components/Fminfo/fminfo-card';
-import FminfoDescriptionSkeleton from './fminfo-description-skeleton';
+import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
+import CardPopoverContent from '@/components/Fminfo/card-popover-content';
+import { Separator } from '@/components/ui/separator';
+
 import { useGlobalStateStore } from '@/store/settings-store';
 import { useDomainData } from '@/hooks/useQueryHooks/useDomainData';
 import {
   DataPopoverButton,
   DataPopoverButtonProps,
-} from '../../data-popover-button';
-import { Skeleton } from '../ui/skeleton';
-import { ScrollArea } from '../ui/scroll-area';
-import { Label } from '../ui/label';
-import ClipboardText from '../clipboard-text';
+} from '../../../data-popover-button';
+import { Skeleton } from '../../ui/skeleton';
+import { ScrollArea } from '../../ui/scroll-area';
+import { Label } from '../../ui/label';
+import ClipboardText from '../../clipboard-text';
 
 type PasswordDataCardProps = {
   queryErrorMessage: string;
@@ -47,33 +48,13 @@ const PasswordDataCard = ({ queryErrorMessage }: PasswordDataCardProps) => {
       : IS_CONNECTED_AND_TRUSTED
       ? (passwordDataQuery?.data?.data.rating as FminfoRating) ?? 'error'
       : 'error',
-    title: 'PASSWORD EXPIRES IN',
+    title: 'Password Expires In',
     value: IS_PASSWORD_DATA_LOADING
       ? 'LOADING'
       : IS_CONNECTED_AND_TRUSTED
       ? passwordDataQuery?.data?.data.daysLeft ?? 'ERROR'
       : 'ERROR',
-    icon: <KeyRound className='mr-2 h-4 w-4' />,
-    cardBody: IS_PASSWORD_DATA_LOADING ? (
-      <FminfoDescriptionSkeleton />
-    ) : (
-      <>
-        <p className='text-muted-foreground w-7/12 text-xs'>
-          {IS_CONNECTED_TO_INTERNET
-            ? IS_CONNECTED_AND_TRUSTED
-              ? passwordDataQuery?.data?.data.description ??
-                (passwordDataQuery?.isError && queryErrorMessage)
-              : 'Please connect to a trusted network to see your current password data.'
-            : 'Please connect to the internet to see your current password data.'}
-        </p>
-
-        {IS_CONNECTED_AND_TRUSTED && (
-          <p className='text-muted-foreground w-7/12 text-xs'>
-            Last Updated: {passwordDataQuery?.data?.timestamp ?? ''}
-          </p>
-        )}
-      </>
-    ),
+    lastUpdated: passwordDataQuery?.data?.timestamp ?? '',
   };
 
   const domainDataQuery = useDomainData();
@@ -134,9 +115,23 @@ const PasswordDataCard = ({ queryErrorMessage }: PasswordDataCardProps) => {
   };
 
   return (
-    <FminfoCard {...cardProps}>
-      <DataPopoverButton {...getDomainDataCardProps()} />
-    </FminfoCard>
+    <InfoCard {...cardProps}>
+      <CardPopoverContent
+        isLoading={IS_PASSWORD_DATA_LOADING}
+        lastUpdated={cardProps.lastUpdated}
+      >
+        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
+        <Separator />
+        <p className='pt-2 text-sm'>
+          {IS_CONNECTED_TO_INTERNET
+            ? IS_CONNECTED_AND_TRUSTED
+              ? passwordDataQuery?.data?.data.description ??
+                (passwordDataQuery?.isError && queryErrorMessage)
+              : 'Please connect to a trusted network to see your current password data.'
+            : 'Please connect to the internet to see your current password data.'}
+        </p>
+      </CardPopoverContent>
+    </InfoCard>
   );
 };
 

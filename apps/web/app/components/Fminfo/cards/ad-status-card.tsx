@@ -3,10 +3,10 @@
 
 'use client';
 
-import { Laptop } from 'lucide-react';
+import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
+import CardPopoverContent from '@/components/Fminfo/card-popover-content';
+import { Separator } from '@/components/ui/separator';
 import { useADStatus } from '@/hooks/useQueryHooks/useADStatus';
-import FminfoCard, { FminfoRating } from '@/components/Fminfo/fminfo-card';
-import FminfoDescriptionSkeleton from './fminfo-description-skeleton';
 import { useGlobalStateStore } from '@/store/settings-store';
 
 type ADStatusCardProps = {
@@ -25,28 +25,28 @@ const ADStatusCard = ({ queryErrorMessage }: ADStatusCardProps) => {
     rating: IS_AD_STATUS_LOADING
       ? 'loading'
       : (ADStatusQuery?.data?.data.rating as FminfoRating) ?? 'error',
-    title: IS_MACOS ? 'ON-PREM ACTIVE DIRECTORY' : 'AZURE ACTIVE DIRECTORY',
+    title: IS_MACOS ? 'On-Prem Active Directory' : 'Azure Active Directory',
     value: IS_AD_STATUS_LOADING
       ? 'LOADING'
       : ADStatusQuery?.data?.data.isBound ?? 'ERROR',
-    icon: <Laptop className='mr-2 h-4 w-4' />,
-    cardBody: IS_AD_STATUS_LOADING ? (
-      <FminfoDescriptionSkeleton />
-    ) : (
-      <>
-        <p className='text-muted-foreground w-7/12 text-xs'>
+    lastUpdated: ADStatusQuery?.data?.timestamp,
+  };
+
+  return (
+    <InfoCard {...cardProps}>
+      <CardPopoverContent
+        isLoading={IS_AD_STATUS_LOADING}
+        lastUpdated={cardProps.lastUpdated}
+      >
+        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
+        <Separator />
+        <p className='pt-2 text-sm'>
           {ADStatusQuery?.data?.data.description ??
             (ADStatusQuery?.isError && queryErrorMessage)}
         </p>
-
-        <p className='text-muted-foreground w-7/12 text-xs'>
-          Last Updated: {ADStatusQuery?.data?.timestamp ?? ''}
-        </p>
-      </>
-    ),
-  };
-
-  return <FminfoCard {...cardProps} />;
+      </CardPopoverContent>
+    </InfoCard>
+  );
 };
 
 export default ADStatusCard;

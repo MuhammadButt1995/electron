@@ -38,11 +38,13 @@ export const WiFiDataResponse = FmInfoAPIResponseSchema.and(
 );
 
 const url = 'http://localhost:8000/tools/wifi-details';
+const FIVE_MINUTES_IN_MS = 300000;
+
 export const useWiFiData = () => {
   const wifiDataQuery = useQuery({
     queryKey: [url],
     queryFn: () => fetchAndParseData(url, WiFiDataResponse),
-    refetchInterval: 5000,
+    refetchInterval: FIVE_MINUTES_IN_MS,
     refetchIntervalInBackground: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,

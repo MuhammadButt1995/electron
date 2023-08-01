@@ -11,6 +11,8 @@ import { useWiFiData } from './hooks/useQueryHooks/useWifiData';
 import { useGlobalStateStore } from './store/settings-store';
 import { useTabStateStore } from './store/tab-state-store';
 import { useLastBootTime } from './hooks/useQueryHooks/useLastBootTime';
+import { useBatteryHealth } from './hooks/useQueryHooks/useBatteryHealth';
+import { useSSDHealth } from './hooks/useQueryHooks/useSSDHealth';
 
 type Props = {
   children: React.ReactNode;
@@ -53,6 +55,8 @@ export const QueryRunner = ({ children }: Props) => {
   const passwordQuery = usePasswordData();
   const diskQuery = useDiskSpace();
   const lastBootQuery = useLastBootTime();
+  const batteryHealthQuery = useBatteryHealth();
+  const SSDHealthQuery = useSSDHealth();
 
   if (wifiQuery?.data?.data?.rating === 'ok' && IS_CONNECTED_TO_INTERNET) {
     setInternetStatus(true);
@@ -84,7 +88,9 @@ export const QueryRunner = ({ children }: Props) => {
 
   if (
     diskQuery?.data?.data?.rating === 'ok' &&
-    lastBootQuery?.data?.data?.rating === 'ok'
+    lastBootQuery?.data?.data?.rating === 'ok' &&
+    batteryHealthQuery?.data?.data.rating === 'ok' &&
+    SSDHealthQuery?.data?.data.rating === 'ok'
   ) {
     setDeviceStatus(true);
   } else {

@@ -6,16 +6,18 @@
 import { useEffect, useRef, useState } from 'react';
 import { Footprints, HelpCircle, Signal } from 'lucide-react';
 import { useWiFiData } from '@/hooks/useQueryHooks/useWifiData';
-import FminfoCard, { FminfoRating } from '@/components/Fminfo/fminfo-card';
-import FminfoDescriptionSkeleton from './fminfo-description-skeleton';
+import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
+import CardPopoverContent from '@/components/Fminfo/card-popover-content';
+import { Separator } from '@/components/ui/separator';
+import FminfoDescriptionSkeleton from '../info-card-popover-skeleton';
 import { useGlobalStateStore } from '@/store/settings-store';
 import {
   StaticPopoverButton,
   StaticPopoverButtonProps,
-} from '../../static-popover-button';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+} from '../../../static-popover-button';
+import { Label } from '../../ui/label';
+import { Input } from '../../ui/input';
+import { Button } from '../../ui/button';
 
 type WifiSignalCardProps = {
   queryErrorMessage: string;
@@ -102,31 +104,13 @@ const WifiSignalCard = ({ queryErrorMessage }: WifiSignalCardProps) => {
       : IS_CONNECTED_TO_INTERNET
       ? (wifiDataQuery?.data?.data.rating as FminfoRating) ?? 'error'
       : 'error',
-    title: 'WI-FI SIGNAL',
+    title: 'Wi-Fi Connection',
     value: IS_WIFI_DATA_LOADING
       ? 'LOADING'
       : IS_CONNECTED_TO_INTERNET
       ? wifiDataQuery?.data?.data.overall ?? 'ERROR'
       : 'ERROR',
-    icon: <Signal className='mr-2 h-4 w-4' />,
-    cardBody: IS_WIFI_DATA_LOADING ? (
-      <FminfoDescriptionSkeleton />
-    ) : (
-      <>
-        <p className='text-muted-foreground w-7/12 text-xs'>
-          {IS_CONNECTED_TO_INTERNET
-            ? wifiDataQuery?.data?.data.description ??
-              (wifiDataQuery?.isError && queryErrorMessage)
-            : 'Please connect to a Wi-Fi network to see your Wi-Fi signal details.'}
-        </p>
-
-        {IS_CONNECTED_TO_INTERNET && (
-          <p className='text-muted-foreground w-7/12 text-xs'>
-            Last Updated: {wifiDataQuery?.data?.timestamp ?? ''}
-          </p>
-        )}
-      </>
-    ),
+    lastUpdated: wifiDataQuery?.data?.timestamp ?? '',
   };
 
   const getWifiDataContentProps = (): StaticPopoverButtonProps => ({
@@ -262,12 +246,23 @@ const WifiSignalCard = ({ queryErrorMessage }: WifiSignalCardProps) => {
   return (
     <div>
       {!wifiAssistant ? (
-        <FminfoCard {...cardProps}>
-          <StaticPopoverButton {...getWifiDataContentProps()} />
-          <StaticPopoverButton {...getWifiAssistantContentProps()} />
-        </FminfoCard>
+        <InfoCard {...cardProps}>
+          <CardPopoverContent
+            isLoading={IS_WIFI_DATA_LOADING}
+            lastUpdated={cardProps.lastUpdated}
+          >
+            <h4 className='text-md font-semibold'>{cardProps.title}</h4>
+            <Separator />
+            <p className='pt-2 text-sm'>
+              {IS_CONNECTED_TO_INTERNET
+                ? wifiDataQuery?.data?.data.description ??
+                  (wifiDataQuery?.isError && queryErrorMessage)
+                : 'Please connect to a Wi-Fi network to see your Wi-Fi signal details.'}
+            </p>
+          </CardPopoverContent>
+        </InfoCard>
       ) : (
-        <FminfoCard {...wifiAssistantCardProps} />
+        <InfoCard {...wifiAssistantCardProps} />
       )}
     </div>
   );

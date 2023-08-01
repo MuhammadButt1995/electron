@@ -1,5 +1,4 @@
-/* eslint-disable react/function-component-definition */
-import { cn } from '@/components/lib/utils';
+import { cn } from "@/lib/utils"
 
 function Skeleton({
   className,
@@ -7,10 +6,10 @@ function Skeleton({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('bg-muted animate-pulse rounded-md', className)}
+      className={cn("animate-pulse rounded-md bg-primary/10", className)}
       {...props}
     />
-  );
+  )
 }
 
-export { Skeleton };
+export { Skeleton }

@@ -5,23 +5,23 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 import { FmInfoAPIResponseSchema } from '@/types/api';
 
-export const LastBootTimeResponse = FmInfoAPIResponseSchema.and(
+const SSDHealthStatusEnum = z.enum(['HEALTHY', 'UNHEALTHY']);
+
+export const SSDHealthResponse = FmInfoAPIResponseSchema.and(
   z.object({
     data: z.object({
-      lastBootTime: z.string(),
-      daysSinceBoot: z.string(),
-      healthStatus: z.string(),
+      ssdHealthStatus: SSDHealthStatusEnum,
     }),
   })
 );
 
-const url = 'http://localhost:8000/tools/last-boottime';
+const url = 'http://localhost:8000/tools/ssd-health';
 const ONE_DAY_IN_MS = 86400000;
 
-export const useLastBootTime = () => {
-  const lastBootTimeQuery = useQuery({
+export const useSSDHealth = () => {
+  const SSDHealthQuery = useQuery({
     queryKey: [url],
-    queryFn: () => fetchAndParseData(url, LastBootTimeResponse),
+    queryFn: () => fetchAndParseData(url, SSDHealthResponse),
     refetchOnMount: false,
     refetchInterval: ONE_DAY_IN_MS,
     refetchIntervalInBackground: true,
@@ -30,5 +30,5 @@ export const useLastBootTime = () => {
     networkMode: 'always',
   });
 
-  return lastBootTimeQuery;
+  return SSDHealthQuery;
 };

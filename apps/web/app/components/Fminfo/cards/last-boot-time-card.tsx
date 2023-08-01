@@ -3,11 +3,10 @@
 
 'use client';
 
-import { useEffect } from 'react';
-import { Power } from 'lucide-react';
+import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
+import CardPopoverContent from '@/components/Fminfo/card-popover-content';
+import { Separator } from '@/components/ui/separator';
 import { useLastBootTime } from '@/hooks/useQueryHooks/useLastBootTime';
-import FminfoCard, { FminfoRating } from '@/components/Fminfo/fminfo-card';
-import FminfoDescriptionSkeleton from './fminfo-description-skeleton';
 
 type LastBootTimeCardProps = {
   queryErrorMessage: string;
@@ -23,28 +22,31 @@ const LastBootTimeCard = ({ queryErrorMessage }: LastBootTimeCardProps) => {
     rating: IS_LAST_BOOT_TIME_LOADING
       ? 'loading'
       : (lastBootTimeQuery?.data?.data.rating as FminfoRating) ?? 'error',
-    title: 'LAST RESTARTED',
+    title: 'System Reboot Health',
     value: IS_LAST_BOOT_TIME_LOADING
       ? 'LOADING'
-      : lastBootTimeQuery?.data?.data.daysSinceBoot ?? 'ERROR',
-    icon: <Power className='mr-2 h-4 w-4' />,
-    cardBody: IS_LAST_BOOT_TIME_LOADING ? (
-      <FminfoDescriptionSkeleton />
-    ) : (
-      <>
-        <p className='text-muted-foreground w-7/12 text-xs'>
+      : lastBootTimeQuery?.data?.data.healthStatus ?? 'ERROR',
+    subvalue: IS_LAST_BOOT_TIME_LOADING
+      ? ''
+      : lastBootTimeQuery?.data?.data.daysSinceBoot,
+    lastUpdated: lastBootTimeQuery?.data?.timestamp ?? '',
+  };
+
+  return (
+    <InfoCard {...cardProps}>
+      <CardPopoverContent
+        isLoading={IS_LAST_BOOT_TIME_LOADING}
+        lastUpdated={cardProps.lastUpdated}
+      >
+        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
+        <Separator />
+        <p className='pt-2 text-sm'>
           {lastBootTimeQuery?.data?.data.description ??
             (lastBootTimeQuery?.isError && queryErrorMessage)}
         </p>
-
-        <p className='text-muted-foreground w-7/12 text-xs'>
-          Last Updated: {lastBootTimeQuery?.data?.timestamp ?? ''}
-        </p>
-      </>
-    ),
-  };
-
-  return <FminfoCard {...cardProps} />;
+      </CardPopoverContent>
+    </InfoCard>
+  );
 };
 
 export default LastBootTimeCard;

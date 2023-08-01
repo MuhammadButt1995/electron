@@ -5,23 +5,24 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 import { FmInfoAPIResponseSchema } from '@/types/api';
 
-export const LastBootTimeResponse = FmInfoAPIResponseSchema.and(
+export const BatteryHealthResponse = FmInfoAPIResponseSchema.and(
   z.object({
     data: z.object({
-      lastBootTime: z.string(),
-      daysSinceBoot: z.string(),
-      healthStatus: z.string(),
+      batteryHealthStatus: z.string(),
+      batteryHealthPercentage: z.string(),
+      batteryChargePercentage: z.string(),
+      isPlugged: z.boolean(),
     }),
   })
 );
 
-const url = 'http://localhost:8000/tools/last-boottime';
+const url = 'http://localhost:8000/tools/battery-health';
 const ONE_DAY_IN_MS = 86400000;
 
-export const useLastBootTime = () => {
-  const lastBootTimeQuery = useQuery({
+export const useBatteryHealth = () => {
+  const batteryHealthQuery = useQuery({
     queryKey: [url],
-    queryFn: () => fetchAndParseData(url, LastBootTimeResponse),
+    queryFn: () => fetchAndParseData(url, BatteryHealthResponse),
     refetchOnMount: false,
     refetchInterval: ONE_DAY_IN_MS,
     refetchIntervalInBackground: true,
@@ -30,5 +31,5 @@ export const useLastBootTime = () => {
     networkMode: 'always',
   });
 
-  return lastBootTimeQuery;
+  return batteryHealthQuery;
 };
