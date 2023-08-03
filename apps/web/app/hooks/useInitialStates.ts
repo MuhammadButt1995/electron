@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 import { useNetwork, useOs } from '@mantine/hooks';
-import { useGlobalStateStore } from '@/store/settings-store';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
 const useInitialStates = () => {
   const [updateIsConnectedToInternet, updateInternetConnectionType] =

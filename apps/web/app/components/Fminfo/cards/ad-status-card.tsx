@@ -1,21 +1,30 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable no-nested-ternary */
-
 'use client';
 
-import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
-import CardPopoverContent from '@/components/Fminfo/card-popover-content';
-import { Separator } from '@/components/ui/separator';
 import { useADStatus } from '@/hooks/useQueryHooks/useADStatus';
-import { useGlobalStateStore } from '@/store/settings-store';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
-type ADStatusCardProps = {
-  queryErrorMessage: string;
-};
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
+import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
 
-const ADStatusCard = ({ queryErrorMessage }: ADStatusCardProps) => {
+const ADStatusCard = () => {
+  const queryErrorMessage = useGlobalStateStore(
+    (state) => state.queryErrorMessage
+  );
   const OS = useGlobalStateStore((state) => state.os);
   const IS_MACOS = OS === 'macos';
+
+  const items = {
+    ok: (
+      <p className='text-xs font-semibold text-center'>
+        {IS_MACOS ? 'Bound to AD' : 'Bound to Azure AD'}
+      </p>
+    ),
+    error: (
+      <p className='text-xs font-semibold text-center'>
+        {IS_MACOS ? 'Not Bound to AD' : 'Not Bound to Azure AD'}
+      </p>
+    ),
+  };
 
   const ADStatusQuery = useADStatus();
   const IS_AD_STATUS_LOADING =
@@ -30,21 +39,17 @@ const ADStatusCard = ({ queryErrorMessage }: ADStatusCardProps) => {
       ? 'LOADING'
       : ADStatusQuery?.data?.data.isBound ?? 'ERROR',
     lastUpdated: ADStatusQuery?.data?.timestamp,
+    isLoading: IS_AD_STATUS_LOADING,
+    refreshRate: 'every 15 minutes',
   };
 
   return (
     <InfoCard {...cardProps}>
-      <CardPopoverContent
-        isLoading={IS_AD_STATUS_LOADING}
-        lastUpdated={cardProps.lastUpdated}
-      >
-        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
-        <Separator />
-        <p className='pt-2 text-sm'>
-          {ADStatusQuery?.data?.data.description ??
-            (ADStatusQuery?.isError && queryErrorMessage)}
-        </p>
-      </CardPopoverContent>
+      <p className='pt-2 text-sm'>
+        {ADStatusQuery?.data?.data.description ??
+          (ADStatusQuery?.isError && queryErrorMessage)}
+      </p>
+      <CardColorLegend items={items} />
     </InfoCard>
   );
 };

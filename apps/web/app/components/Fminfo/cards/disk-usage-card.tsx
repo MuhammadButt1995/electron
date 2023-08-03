@@ -1,18 +1,33 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable no-nested-ternary */
-
 'use client';
 
-import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
-import CardPopoverContent from '@/components/Fminfo/card-popover-content';
-import { Separator } from '@/components/ui/separator';
 import { useDiskSpace } from '@/hooks/useQueryHooks/useDiskData';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
-type DiskUsageCardProps = {
-  queryErrorMessage: string;
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
+import CardColorLegend from '../ui/card-color-legend';
+
+const items = {
+  ok: (
+    <p className='text-xs font-semibold text-center'>
+      Healthy Usage (&gt; 25% left)
+    </p>
+  ),
+  warn: (
+    <p className='text-xs font-semibold text-center'>
+      At Risk Usage (15% - 25% left)
+    </p>
+  ),
+  error: (
+    <p className='text-xs font-semibold text-center'>
+      Unhealthy Usage (&lt; 15% left)
+    </p>
+  ),
 };
 
-const DiskUsageCard = ({ queryErrorMessage }: DiskUsageCardProps) => {
+const DiskUsageCard = () => {
+  const queryErrorMessage = useGlobalStateStore(
+    (state) => state.queryErrorMessage
+  );
   const diskSpaceQuery = useDiskSpace();
 
   const IS_DISK_SPACE_LOADING =
@@ -27,21 +42,18 @@ const DiskUsageCard = ({ queryErrorMessage }: DiskUsageCardProps) => {
       ? 'LOADING'
       : diskSpaceQuery?.data?.data.diskUtilizationHealth ?? 'ERROR',
     lastUpdated: diskSpaceQuery?.data?.timestamp ?? '',
+    isLoading: IS_DISK_SPACE_LOADING,
+    refreshRate: 'once per day',
   };
 
   return (
     <InfoCard {...cardProps}>
-      <CardPopoverContent
-        isLoading={IS_DISK_SPACE_LOADING}
-        lastUpdated={cardProps.lastUpdated}
-      >
-        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
-        <Separator />
-        <p className='pt-2 text-sm'>
-          {diskSpaceQuery?.data?.data.description ??
-            (diskSpaceQuery?.isError && queryErrorMessage)}
-        </p>
-      </CardPopoverContent>
+      <p className='pt-2 text-sm'>
+        {diskSpaceQuery?.data?.data.description ??
+          (diskSpaceQuery?.isError && queryErrorMessage)}
+      </p>
+
+      <CardColorLegend items={items} />
     </InfoCard>
   );
 };

@@ -21,11 +21,12 @@ export const useDomainData = () => {
   const domainDataQuery = useQuery({
     queryKey: [url],
     queryFn: () => fetchAndParseData(url, DomainDataResponse),
-    enabled: false,
     refetchOnMount: false,
     refetchInterval: false,
-    refetchOnWindowFocus: 'always',
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     useErrorBoundary: true,
+    networkMode: 'online',
   });
 
   return domainDataQuery;

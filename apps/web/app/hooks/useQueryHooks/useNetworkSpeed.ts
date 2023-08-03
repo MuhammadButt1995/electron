@@ -3,8 +3,8 @@
 import { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
-import {SucessfulAPIResponseSchema } from '@/types/api';
-import { TrustedNetworkType } from '@/store/settings-store';
+import { SucessfulAPIResponseSchema } from '@/types/api';
+import { TrustedNetworkType } from '@/store/global-state-store';
 
 export const NetworkSpeedResponse = SucessfulAPIResponseSchema.and(
   z.object({
@@ -16,12 +16,13 @@ export const NetworkSpeedResponse = SucessfulAPIResponseSchema.and(
   })
 );
 
-
 export const useNetworkSpeed = (networkType: TrustedNetworkType) => {
-  const url = `http://localhost:8000/tools/network-speed?is_on_vpn=${networkType === "VPN"}`;
+  const url = `http://localhost:8000/tools/network-speed?is_on_vpn=${
+    networkType === 'VPN'
+  }`;
   const networkSpeedQuery = useQuery({
     queryKey: [url],
-      queryFn: () => fetchAndParseData(url, NetworkSpeedResponse),
+    queryFn: () => fetchAndParseData(url, NetworkSpeedResponse),
     enabled: false,
     refetchOnMount: false,
     refetchInterval: false,

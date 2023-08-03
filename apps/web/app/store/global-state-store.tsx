@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import { create } from 'zustand';
+import { createWithEqualityFn } from 'zustand/traditional';
+import { shallow } from 'zustand/shallow';
 
 type OS = 'macos' | 'windows' | undefined;
 type InternetConnectionType = 'wifi' | 'ethernet' | undefined;
@@ -12,6 +13,7 @@ type GlobalState = {
   internetConnectionType: InternetConnectionType;
   isOnTrustedNetwork: boolean | undefined;
   trustedNetworkType: TrustedNetworkType;
+  queryErrorMessage: string;
 };
 
 type GlobalStateActions = {
@@ -31,7 +33,9 @@ type GlobalStateActions = {
   ) => void;
 };
 
-export const useGlobalStateStore = create<GlobalState & GlobalStateActions>(
+export const useGlobalStateStore = createWithEqualityFn<
+  GlobalState & GlobalStateActions
+>(
   (set) => ({
     os: undefined,
     isConnectedToInternet: undefined,
@@ -39,7 +43,8 @@ export const useGlobalStateStore = create<GlobalState & GlobalStateActions>(
     isOnTrustedNetwork: undefined,
     trustedNetworkType: undefined,
     isDaaSMachine: undefined,
-
+    queryErrorMessage:
+      'Whoops! Something went wrong while fetching this data. Please contact the tech center.',
     updateOS: (os) => set({ os }),
     updateIsDaaSMachine: (isDaaSMachine) => set({ isDaaSMachine }),
     updateIsConnectedToInternet: (isConnectedToInternet) =>
@@ -50,5 +55,6 @@ export const useGlobalStateStore = create<GlobalState & GlobalStateActions>(
       set({ isOnTrustedNetwork }),
     updateTrustedNetworkType: (trustedNetworkType) =>
       set({ trustedNetworkType }),
-  })
+  }),
+  shallow
 );

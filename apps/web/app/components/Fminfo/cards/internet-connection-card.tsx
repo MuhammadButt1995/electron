@@ -1,11 +1,20 @@
-/* eslint-disable react/require-default-props */
-
 'use client';
 
-import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
-import CardPopoverContent from '@/components/Fminfo/card-popover-content';
+import { useGlobalStateStore } from '@/store/global-state-store';
+import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
 import { Separator } from '@/components/ui/separator';
-import { useGlobalStateStore } from '@/store/settings-store';
+
+const items = {
+  ok: (
+    <p className='text-xs font-semibold text-center'>Connected to Internet</p>
+  ),
+  warn: (
+    <p className='text-xs font-semibold text-center'>
+      Disconnected from Internet
+    </p>
+  ),
+};
 
 const InternetConnectionCard = () => {
   const IS_CONNECTED_TO_INTERNET = useGlobalStateStore(
@@ -24,15 +33,14 @@ const InternetConnectionCard = () => {
 
   return (
     <InfoCard {...cardProps}>
-      <CardPopoverContent>
-        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
-        <Separator />
-        <p className='pt-2 text-sm'>
-          {IS_CONNECTED_TO_INTERNET
-            ? 'You are connected to the Internet.'
-            : 'Please connect to a Wi-Fi network or switch to a hardwired connection.'}
-        </p>
-      </CardPopoverContent>
+      <p className='pt-2 text-sm'>
+        {IS_CONNECTED_TO_INTERNET
+          ? 'You are connected to the Internet.'
+          : 'Please connect to a Wi-Fi network or switch to a hardwired connection.'}
+      </p>
+
+      <CardColorLegend items={items} />
+      <Separator />
     </InfoCard>
   );
 };

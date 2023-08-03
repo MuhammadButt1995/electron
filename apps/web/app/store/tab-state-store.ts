@@ -1,4 +1,5 @@
-import { create } from 'zustand';
+import { createWithEqualityFn } from 'zustand/traditional';
+import { shallow } from 'zustand/shallow';
 
 type Store = {
   networkStatus: boolean;
@@ -13,16 +14,19 @@ type Store = {
   setEnterpriseStatus: (status: boolean) => void;
 };
 
-export const useTabStateStore = create<Store>((set) => ({
-  networkStatus: false,
-  identityServicesStatus: false,
-  deviceStatus: false,
-  internetStatus: false,
-  enterpriseStatus: false,
-  setNetworkStatus: (status) => set({ networkStatus: status }),
-  setIdentityServicesStatus: (status) =>
-    set({ identityServicesStatus: status }),
-  setDeviceStatus: (status) => set({ deviceStatus: status }),
-  setInternetStatus: (status) => set({ internetStatus: status }),
-  setEnterpriseStatus: (status) => set({ enterpriseStatus: status }),
-}));
+export const useTabStateStore = createWithEqualityFn<Store>(
+  (set) => ({
+    networkStatus: false,
+    identityServicesStatus: false,
+    deviceStatus: false,
+    internetStatus: false,
+    enterpriseStatus: false,
+    setNetworkStatus: (status) => set({ networkStatus: status }),
+    setIdentityServicesStatus: (status) =>
+      set({ identityServicesStatus: status }),
+    setDeviceStatus: (status) => set({ deviceStatus: status }),
+    setInternetStatus: (status) => set({ internetStatus: status }),
+    setEnterpriseStatus: (status) => set({ enterpriseStatus: status }),
+  }),
+  shallow
+);

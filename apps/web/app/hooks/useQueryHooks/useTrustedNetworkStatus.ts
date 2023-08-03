@@ -9,7 +9,7 @@ import { fetchAndParseData } from '@/lib/fetchAndParseData';
 import {
   useGlobalStateStore,
   TrustedNetworkType,
-} from '@/store/settings-store';
+} from '@/store/global-state-store';
 import { FmInfoAPIResponseSchema } from '@/types/api';
 
 export const TrustedNetworkStatusResponse = FmInfoAPIResponseSchema.and(

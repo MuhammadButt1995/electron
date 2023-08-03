@@ -1,19 +1,26 @@
-/* eslint-disable react/require-default-props */
 /* eslint-disable no-nested-ternary */
 
 'use client';
 
-import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
-import CardPopoverContent from '@/components/Fminfo/card-popover-content';
-import { Separator } from '@/components/ui/separator';
 import { useTrustedNetworkStatus } from '@/hooks/useQueryHooks/useTrustedNetworkStatus';
-import { useGlobalStateStore } from '@/store/settings-store';
+import { useGlobalStateStore } from '@/store/global-state-store';
+import CardColorLegend from '../ui/card-color-legend';
 
-type TrustedNetworkCardProps = {
-  queryErrorMessage: string;
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
+
+const items = {
+  ok: <p className='text-xs font-semibold text-center'>Connected to ZPA/VPN</p>,
+  warn: (
+    <p className='text-xs font-semibold text-center'>
+      Disconnected from ZPA/VPN
+    </p>
+  ),
 };
 
-const TrustedNetworkCard = ({ queryErrorMessage }: TrustedNetworkCardProps) => {
+const TrustedNetworkCard = () => {
+  const queryErrorMessage = useGlobalStateStore(
+    (state) => state.queryErrorMessage
+  );
   const trustedNetworkQuery = useTrustedNetworkStatus();
 
   const IS_CONNECTED_TO_INTERNET = useGlobalStateStore(
@@ -36,23 +43,20 @@ const TrustedNetworkCard = ({ queryErrorMessage }: TrustedNetworkCardProps) => {
       ? trustedNetworkQuery?.data?.data.status ?? 'ERROR'
       : 'ERROR',
     lastUpdated: trustedNetworkQuery?.data?.timestamp ?? '',
+    isLoading: IS_TRUSTED_NETWORK_LOADING,
+    refreshRate: 'in real time',
   };
 
   return (
     <InfoCard {...cardProps}>
-      <CardPopoverContent
-        isLoading={IS_TRUSTED_NETWORK_LOADING}
-        lastUpdated={cardProps.lastUpdated}
-      >
-        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
-        <Separator />
-        <p className='pt-2 text-sm'>
-          {IS_CONNECTED_TO_INTERNET
-            ? trustedNetworkQuery?.data?.data.description ??
-              (trustedNetworkQuery?.isError && queryErrorMessage)
-            : 'Please connect to the internet to see your connection to a trusted network.'}
-        </p>
-      </CardPopoverContent>
+      <p className='pt-2 text-sm'>
+        {IS_CONNECTED_TO_INTERNET
+          ? trustedNetworkQuery?.data?.data.description ??
+            (trustedNetworkQuery?.isError && queryErrorMessage)
+          : 'Please connect to the internet to see your connection to a trusted network.'}
+      </p>
+
+      {IS_CONNECTED_TO_INTERNET && <CardColorLegend items={items} />}
     </InfoCard>
   );
 };

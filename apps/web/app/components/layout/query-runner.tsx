@@ -3,16 +3,18 @@
 'use client';
 
 import { shallow } from 'zustand/shallow';
-import { useADStatus } from './hooks/useQueryHooks/useADStatus';
-import { useDiskSpace } from './hooks/useQueryHooks/useDiskData';
-import { usePasswordData } from './hooks/useQueryHooks/usePasswordData';
-import { useTrustedNetworkStatus } from './hooks/useQueryHooks/useTrustedNetworkStatus';
-import { useWiFiData } from './hooks/useQueryHooks/useWifiData';
-import { useGlobalStateStore } from './store/settings-store';
-import { useTabStateStore } from './store/tab-state-store';
-import { useLastBootTime } from './hooks/useQueryHooks/useLastBootTime';
-import { useBatteryHealth } from './hooks/useQueryHooks/useBatteryHealth';
-import { useSSDHealth } from './hooks/useQueryHooks/useSSDHealth';
+
+import { useGlobalStateStore } from '@/store/global-state-store';
+import { useTabStateStore } from '@/store/tab-state-store';
+
+import { useADStatus } from '@/hooks/useQueryHooks/useADStatus';
+import { useDiskSpace } from '@/hooks/useQueryHooks/useDiskData';
+import { usePasswordData } from '@/hooks/useQueryHooks/usePasswordData';
+import { useTrustedNetworkStatus } from '@/hooks/useQueryHooks/useTrustedNetworkStatus';
+import { useWiFiData } from '@/hooks/useQueryHooks/useWifiData';
+import { useLastBootTime } from '@/hooks/useQueryHooks/useLastBootTime';
+import { useBatteryHealth } from '@/hooks/useQueryHooks/useBatteryHealth';
+import { useSSDHealth } from '@/hooks/useQueryHooks/useSSDHealth';
 
 type Props = {
   children: React.ReactNode;

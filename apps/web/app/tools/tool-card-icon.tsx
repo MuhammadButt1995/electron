@@ -2,7 +2,7 @@
 
 import { ToggleRight, AppWindow, Cog } from 'lucide-react';
 
-import { useSettingsStore } from '@/store/settings-store';
+import { useSettingsStore } from '@/store/global-state-store';
 
 type Props = {
   iconName: string;

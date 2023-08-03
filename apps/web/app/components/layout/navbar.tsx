@@ -3,8 +3,9 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ThemeToggle } from './theme-toggle';
+import { ThemeToggle } from '@/components/layout/theme-toggle';
 
 interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
   items: {

@@ -1,5 +1,3 @@
-/* eslint-disable react/require-default-props */
-
 'use client';
 
 import { useClipboard } from '@mantine/hooks';
@@ -9,7 +7,7 @@ type ClipboardCardProps = {
   text: string;
 };
 
-const ClipboardText = ({text}: ClipboardCardProps) => {
+const ClipboardText = ({ text }: ClipboardCardProps) => {
   const clipboard = useClipboard({ timeout: 800 });
 
   return (
@@ -17,7 +15,9 @@ const ClipboardText = ({text}: ClipboardCardProps) => {
       <Button
         variant='link'
         onClick={() => clipboard.copy(text)}
-        className={`hover:text-brand-teal ${clipboard.copied && 'text-brand-teal'}`}
+        className={`hover:text-brand-teal ${
+          clipboard.copied && 'text-brand-teal'
+        }`}
       >
         {clipboard.copied ? 'Copied' : text}
       </Button>

@@ -1,18 +1,29 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable no-nested-ternary */
-
 'use client';
 
-import InfoCard, { FminfoRating } from '@/components/Fminfo/info-card';
-import CardPopoverContent from '@/components/Fminfo/card-popover-content';
-import { Separator } from '@/components/ui/separator';
 import { useBatteryHealth } from '@/hooks/useQueryHooks/useBatteryHealth';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
-type BatteryHealthCardProps = {
-  queryErrorMessage: string;
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
+import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
+
+const items = {
+  ok: (
+    <p className='text-xs font-semibold text-center'>
+      Healthy Battery (&gt; 75%)
+    </p>
+  ),
+  error: (
+    <p className='text-xs font-semibold text-center'>
+      Unhealthy Battery (&lt; 75%)
+    </p>
+  ),
 };
 
-const BatteryHealthCard = ({ queryErrorMessage }: BatteryHealthCardProps) => {
+const BatteryHealthCard = () => {
+  const queryErrorMessage = useGlobalStateStore(
+    (state) => state.queryErrorMessage
+  );
+
   const batteryHealthQuery = useBatteryHealth();
 
   const IS_BATTERY_HEALTH_LOADING =
@@ -27,21 +38,18 @@ const BatteryHealthCard = ({ queryErrorMessage }: BatteryHealthCardProps) => {
       ? 'LOADING'
       : batteryHealthQuery?.data?.data.batteryHealthStatus ?? 'ERROR',
     lastUpdated: batteryHealthQuery?.data?.timestamp ?? '',
+    isLoading: IS_BATTERY_HEALTH_LOADING,
+    refreshRate: 'once per day',
   };
 
   return (
     <InfoCard {...cardProps}>
-      <CardPopoverContent
-        isLoading={IS_BATTERY_HEALTH_LOADING}
-        lastUpdated={cardProps.lastUpdated}
-      >
-        <h4 className='text-md font-semibold'>{cardProps.title}</h4>
-        <Separator />
-        <p className='pt-2 text-sm'>
-          {batteryHealthQuery?.data?.data.description ??
-            (batteryHealthQuery?.isError && queryErrorMessage)}
-        </p>
-      </CardPopoverContent>
+      <p className='pt-2 text-sm'>
+        {batteryHealthQuery?.data?.data.description ??
+          (batteryHealthQuery?.isError && queryErrorMessage)}
+      </p>
+
+      <CardColorLegend items={items} />
     </InfoCard>
   );
 };

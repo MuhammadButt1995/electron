@@ -7,12 +7,12 @@ import '@/styles/globals.css';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Wrench, Home, LayoutDashboard } from 'lucide-react';
 import { Source_Sans_3 } from '@next/font/google';
-import Navbar from './components/navbar';
+import Navbar from './components/layout/navbar';
 import Providers from '@/components/lib/provider';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { Separator } from '@/components/ui/separator';
-import { QueryRunner } from './query-runner';
+import { QueryRunner } from './components/layout/query-runner';
 import { ThemeProvider } from '@/components/lib/theme-provider';
 import useInitialStates from './hooks/useInitialStates';
 
@@ -25,17 +25,17 @@ const SOURCE_SANS_PRO = Source_Sans_3({
 const navItems = [
   {
     title: 'Home',
-    icon: <Home className='mb-1 h-4 w-4' />,
+    icon: <Home className='w-4 h-4 mb-1' />,
     href: '/',
   },
   {
     title: 'FMInfo',
-    icon: <LayoutDashboard className='mb-1 h-4 w-4' />,
+    icon: <LayoutDashboard className='w-4 h-4 mb-1' />,
     href: '/fminfo',
   },
   {
     title: 'Tools',
-    icon: <Wrench className='mb-1 h-4 w-4' />,
+    icon: <Wrench className='w-4 h-4 mb-1' />,
     href: '/tools',
   },
 ];
@@ -71,9 +71,9 @@ export default function RootLayout({ children }: { children: JSX.Element }) {
 
 function fallbackRender({ error, resetErrorBoundary }) {
   return (
-    <div className='grid min-h-full place-content-center px-6 py-24'>
+    <div className='grid min-h-full px-6 py-24 place-content-center'>
       <div className='text-center'>
-        <p className='text-brand-magenta-800 dark:text-brand-magenta-600 text-base font-semibold'>
+        <p className='text-base font-semibold text-brand-magenta-800 dark:text-brand-magenta-600'>
           Something went wrong
         </p>
 
@@ -85,7 +85,7 @@ function fallbackRender({ error, resetErrorBoundary }) {
           {error.cause?.toString()}
         </h1>
 
-        <p className='text-muted-foreground mt-6 leading-7'>
+        <p className='mt-6 leading-7 text-muted-foreground'>
           Please click &apos;Try again&apos; to see if the problem has been
           fixed or contact the tech center if the problem persists.
         </p>

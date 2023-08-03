@@ -56,7 +56,7 @@ export const useADStatus = () => {
       ),
     refetchOnMount: false,
     refetchOnWindowFocus: false,
-    refetchInterval: 600000,
+    refetchInterval: 900000,
     refetchIntervalInBackground: true,
     useErrorBoundary: true,
     networkMode: 'always',

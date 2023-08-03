@@ -47,6 +47,7 @@ export const useWiFiData = () => {
     refetchInterval: FIVE_MINUTES_IN_MS,
     refetchIntervalInBackground: true,
     refetchOnMount: true,
+    refetchOnReconnect: true,
     refetchOnWindowFocus: true,
     useErrorBoundary: true,
     networkMode: 'always',
