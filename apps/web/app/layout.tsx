@@ -34,9 +34,9 @@ const navItems = [
     href: '/fminfo',
   },
   {
-    title: 'Tools',
+    title: 'Toolbox',
     icon: <Wrench className='w-4 h-4 mb-1' />,
-    href: '/tools',
+    href: '/toolbox',
   },
 ];
 

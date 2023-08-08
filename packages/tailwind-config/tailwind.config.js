@@ -30,6 +30,8 @@ module.exports = {
           green: 'hsl(var(--brand-green))',
           yellow: 'hsl(var(--brand-yellow))',
           magenta: 'hsl(var(--brand-magenta))',
+          orange: 'hsl(var(--brand-orange))',
+          black: 'hsl(var(--brand-black))',
         },
         primary: {
           DEFAULT: 'hsl(var(--primary))',

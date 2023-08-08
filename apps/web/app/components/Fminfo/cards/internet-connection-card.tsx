@@ -1,6 +1,7 @@
 'use client';
 
 import { useGlobalStateStore } from '@/store/global-state-store';
+
 import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
 import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
 import { Separator } from '@/components/ui/separator';

@@ -3,8 +3,8 @@
 import { useLastBootTime } from '@/hooks/useQueryHooks/useLastBootTime';
 import { useGlobalStateStore } from '@/store/global-state-store';
 
-import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
 import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
 
 const items = {
   ok: (

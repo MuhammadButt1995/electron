@@ -5,9 +5,8 @@
 import { usePasswordData } from '@/hooks/useQueryHooks/usePasswordData';
 import { useGlobalStateStore } from '@/store/global-state-store';
 
-import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
-
 import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
+import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
 
 const items = {
   ok: <p className='text-xs font-semibold '>&gt;14 Days Left</p>,

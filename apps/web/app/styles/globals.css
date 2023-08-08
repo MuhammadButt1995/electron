@@ -41,6 +41,8 @@
     --brand-green: 131 41% 29%;
     --brand-yellow: 42 100% 50%;
     --brand-magenta: 327 70% 34%;
+    --brand-orange: 18 71% 45%;
+    --brand-black: 0 0% 7%;
   }
 
   .dark {
@@ -79,6 +81,8 @@
     --brand-green: 131 41% 29%;
     --brand-yellow: 42 100% 50%;
     --brand-magenta: 327 70% 34%;
+    --brand-orange: 18 71% 45%;
+    --brand-black: 0 0% 7%;
   }
 }
 

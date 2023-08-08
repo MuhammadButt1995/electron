@@ -15,7 +15,7 @@ export default function ToolsLayout({
   const pathName = usePathname();
   return (
     <>
-      {pathName === '/tools' ? (
+      {/* {pathName === '/toolbox' ? (
         <Button className='fixed right-6 top-8 justify-between'>
           <Users className='mr-2 h-4 w-4' />
           Switch Toolbox
@@ -28,7 +28,7 @@ export default function ToolsLayout({
           <UndoDot className='mr-2 h-4 w-4' />
           Back to Toolbox
         </Button>
-      )}
+      )} */}
 
       {children}
     </>

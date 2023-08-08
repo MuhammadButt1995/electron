@@ -3,8 +3,8 @@
 import { useSSDHealth } from '@/hooks/useQueryHooks/useSSDHealth';
 import { useGlobalStateStore } from '@/store/global-state-store';
 
+import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
 import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
-import CardColorLegend from '../ui/card-color-legend';
 
 const items = {
   ok: <p className='text-xs font-semibold text-center'>Healthy SSD</p>,

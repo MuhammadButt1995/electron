@@ -3,8 +3,8 @@
 import { useDiskSpace } from '@/hooks/useQueryHooks/useDiskData';
 import { useGlobalStateStore } from '@/store/global-state-store';
 
+import CardColorLegend from '@/components/fminfo/ui/card-color-legend';
 import InfoCard, { FminfoRating } from '@/components/fminfo/ui/info-card';
-import CardColorLegend from '../ui/card-color-legend';
 
 const items = {
   ok: (
