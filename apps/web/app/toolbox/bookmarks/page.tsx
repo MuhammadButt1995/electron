@@ -56,9 +56,12 @@ function useBookmarkMutation() {
     async (variables: MutationVariables) => {
       const res = await fetch(variables.endpoint);
       if (!res.ok) throw new Error(`Error: ${variables.endpoint}`);
+
       const jsonData = await res.json();
+
       if (jsonData.success) return jsonData;
-      throw new Error('Something went wrong.');
+
+      throw new Error(jsonData.error);
     },
     {
       onSuccess: (data, variables: MutationVariables) => {

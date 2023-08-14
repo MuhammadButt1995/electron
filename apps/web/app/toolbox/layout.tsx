@@ -17,7 +17,7 @@ export default function ToolsLayout({
     <>
       {pathName !== '/toolbox' && (
         <Button
-          className='fixed right-12 top-5 justify-between'
+          className='fixed right-12 top-8 justify-between'
           onClick={() => router.replace('/toolbox')}
           variant='outline'
         >
