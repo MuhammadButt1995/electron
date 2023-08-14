@@ -26,8 +26,16 @@ const Navbar = ({ className, items, ...props }: NavbarProps) => {
           href={item.href}
           className={cn(
             buttonVariants({
-              variant: pathname === item.href ? 'link' : 'ghost',
-              className: `${pathname === item.href ? 'text-brand-teal' : ''}`,
+              variant:
+                (item.href === '/' && pathname === '/') ||
+                (item.href !== '/' && pathname.includes(item.href))
+                  ? 'link'
+                  : 'ghost',
+              className:
+                (item.href === '/' && pathname === '/') ||
+                (item.href !== '/' && pathname.includes(item.href))
+                  ? 'text-brand-teal'
+                  : '',
             }),
             'py-6',
             'px-2'

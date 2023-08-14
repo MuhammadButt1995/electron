@@ -3,7 +3,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
-import { UndoDot, Users } from 'lucide-react';
+import { UndoDot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function ToolsLayout({
@@ -15,20 +15,16 @@ export default function ToolsLayout({
   const pathName = usePathname();
   return (
     <>
-      {/* {pathName === '/toolbox' ? (
-        <Button className='fixed right-6 top-8 justify-between'>
-          <Users className='mr-2 h-4 w-4' />
-          Switch Toolbox
-        </Button>
-      ) : (
+      {pathName !== '/toolbox' && (
         <Button
-          className='fixed right-6 top-8 justify-between'
-          onClick={() => router.replace('/tools')}
+          className='fixed right-12 top-5 justify-between'
+          onClick={() => router.replace('/toolbox')}
+          variant='outline'
         >
           <UndoDot className='mr-2 h-4 w-4' />
           Back to Toolbox
         </Button>
-      )} */}
+      )}
 
       {children}
     </>
