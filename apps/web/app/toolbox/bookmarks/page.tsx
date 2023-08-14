@@ -77,7 +77,7 @@ function useBookmarkMutation() {
       onError: (error, variables: MutationVariables) => {
         const formattedBrowsers = formatBrowsersList(variables.browsers);
         toast({
-          className: 'text-red-600',
+          variant: 'destructive',
           title:
             variables.action === 'export'
               ? `Error exporting bookmarks for ${formattedBrowsers}!`

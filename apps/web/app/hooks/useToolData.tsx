@@ -55,9 +55,7 @@ export const useCommandToolData = (tool: CommandTool) => {
       const jsonData = await res.json();
       if (jsonData.success) return jsonData;
 
-      throw new Error(
-        'Something went wrong while running this command tool. Please try again.'
-      );
+      throw new Error(jsonData.error);
     },
     enabled: false,
     retry: false,
@@ -65,12 +63,19 @@ export const useCommandToolData = (tool: CommandTool) => {
     refetchInterval: false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
-    useErrorBoundary: true,
     networkMode: 'always',
     onSuccess: () => {
       toast({
         className: 'text-brand-teal',
         title: `Successfully executed the ${tool?.name} Tool.`,
+      });
+    },
+
+    onError: (error) => {
+      toast({
+        variant: 'destructive',
+        title: `Error: Couldn't run the ${tool?.name} Tool.`,
+        description: `${error}`,
       });
     },
   });
@@ -88,9 +93,7 @@ export const useToggleToolData = (tool: ToggleTool) => {
       const jsonData = await res.json();
       if (jsonData.success) return jsonData;
 
-      throw new Error(
-        'Something went wrong while running this toggle tool. Please try again.'
-      );
+      throw new Error(jsonData.error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['all-tools']);
