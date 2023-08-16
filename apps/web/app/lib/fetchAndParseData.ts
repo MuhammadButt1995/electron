@@ -30,7 +30,7 @@ export async function fetchAndParseData<T extends z.ZodType<any, any>>(
     const result = schema.safeParse(data);
 
     if (!result.success) {
-      throw new UnsuccessfulZodParsingError();
+      throw new UnsuccessfulZodParsingError(url);
     }
 
     return result.data;

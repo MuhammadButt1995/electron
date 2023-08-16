@@ -16,7 +16,8 @@ export class NetworkResponseError extends Error {
 
 export class UnsuccessfulZodParsingError extends Error {
   constructor(
-    message = 'Data could not be parsed into a schema<T> or ErrorAPIResponseSchema'
+    url: string,
+    message: string = `Data from endpoint ${url} could not be parsed into the provided zod schema`
   ) {
     super(message);
     this.name = 'UnsuccessfulZodParsing';

@@ -6,6 +6,7 @@
 
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 export default function Error({
   error,
@@ -20,11 +21,19 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className='grid min-h-full place-content-center px-6 py-24'>
+    <div className='grid min-h-full px-6 py-24 place-content-center'>
       <div className='text-center'>
-        <p className='text-brand-magenta-800 dark:text-brand-magenta-600 text-base font-semibold'>
-          Something went wrong
-        </p>
+        <div className='flex flex-row items-center justify-center space-x-4 text-brand-magenta'>
+          <p className='text-base font-semibold text-brand-magenta-800 dark:text-brand-magenta-600'>
+            Something went wrong
+          </p>
+
+          <Separator orientation='vertical' className='h-4' />
+
+          <h1 className='text-base font-semibold text-brand-magenta-800 dark:text-brand-magenta-600'>
+            {error.name}
+          </h1>
+        </div>
 
         <h1 className='mt-4 text-3xl font-bold tracking-tight'>
           {error.message}
@@ -34,7 +43,7 @@ export default function Error({
           {error.cause?.toString()}
         </h1>
 
-        <p className='text-muted-foreground mt-6 leading-7'>
+        <p className='mt-6 leading-7 text-muted-foreground'>
           Please click &apos;Try again&apos; to see if the problem has been
           fixed or contact the tech center if the problem persists.
         </p>

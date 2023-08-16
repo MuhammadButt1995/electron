@@ -9,7 +9,6 @@ export const NetworkAdaptersResponse = SucessfulAPIResponseSchema.and(
   z.object({
     data: z.object({
       active_adapters: z.record(z.string()),
-      inactive_adapters: z.record(z.string()),
     }),
   })
 );
