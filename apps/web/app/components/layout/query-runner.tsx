@@ -2,6 +2,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { shallow } from 'zustand/shallow';
 
 import { useGlobalStateStore } from '@/store/global-state-store';
@@ -60,44 +61,64 @@ export const QueryRunner = ({ children }: Props) => {
   const batteryHealthQuery = useBatteryHealth();
   const SSDHealthQuery = useSSDHealth();
 
-  if (wifiQuery?.data?.data?.rating === 'ok' && IS_CONNECTED_TO_INTERNET) {
-    setInternetStatus(true);
-  } else {
-    setInternetStatus(false);
-  }
+  useEffect(() => {
+    if (wifiQuery?.data?.data?.rating === 'ok' && IS_CONNECTED_TO_INTERNET) {
+      setInternetStatus(true);
+    } else {
+      setInternetStatus(false);
+    }
 
-  if (networkQuery?.data?.data?.rating === 'ok') {
-    setEnterpriseStatus(true);
-  } else {
-    setEnterpriseStatus(false);
-  }
+    if (networkQuery?.data?.data?.rating === 'ok') {
+      setEnterpriseStatus(true);
+    } else {
+      setEnterpriseStatus(false);
+    }
 
-  if (internetStatus && enterpriseStatus) {
-    setNetworkStatus(true);
-  } else {
-    setNetworkStatus(false);
-  }
+    if (internetStatus && enterpriseStatus) {
+      setNetworkStatus(true);
+    } else {
+      setNetworkStatus(false);
+    }
 
-  if (
-    adQuery?.data?.data?.rating === 'ok' &&
-    passwordQuery?.data?.data?.rating === 'ok' &&
-    IS_ON_TRUSTED_NETWORK
-  ) {
-    setIdentityServicesStatus(true);
-  } else {
-    setIdentityServicesStatus(false);
-  }
+    if (
+      adQuery?.data?.data?.rating === 'ok' &&
+      passwordQuery?.data?.data?.rating === 'ok' &&
+      IS_ON_TRUSTED_NETWORK
+    ) {
+      setIdentityServicesStatus(true);
+    } else {
+      setIdentityServicesStatus(false);
+    }
 
-  if (
-    diskQuery?.data?.data?.rating === 'ok' &&
-    lastBootQuery?.data?.data?.rating === 'ok' &&
-    batteryHealthQuery?.data?.data.rating === 'ok' &&
-    SSDHealthQuery?.data?.data.rating === 'ok'
-  ) {
-    setDeviceStatus(true);
-  } else {
-    setDeviceStatus(false);
-  }
+    if (
+      diskQuery?.data?.data?.rating === 'ok' &&
+      lastBootQuery?.data?.data?.rating === 'ok' &&
+      batteryHealthQuery?.data?.data.rating === 'ok' &&
+      SSDHealthQuery?.data?.data.rating === 'ok'
+    ) {
+      setDeviceStatus(true);
+    } else {
+      setDeviceStatus(false);
+    }
+  }, [
+    wifiQuery,
+    networkQuery,
+    adQuery,
+    passwordQuery,
+    diskQuery,
+    lastBootQuery,
+    batteryHealthQuery,
+    SSDHealthQuery,
+    IS_CONNECTED_TO_INTERNET,
+    IS_ON_TRUSTED_NETWORK,
+    internetStatus,
+    enterpriseStatus,
+    setInternetStatus,
+    setEnterpriseStatus,
+    setNetworkStatus,
+    setIdentityServicesStatus,
+    setDeviceStatus,
+  ]);
 
   return <>{children}</>;
 };

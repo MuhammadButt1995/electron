@@ -47,6 +47,7 @@ module.exports = {
     'no-console': 'warn',
     'no-unused-vars': 'off',
     'import/extensions': 0,
+    'import/no-cycle': 'warn',
     'import/prefer-default-export': 'off',
     // typescript
     '@typescript-eslint/no-unused-vars': 'warn',

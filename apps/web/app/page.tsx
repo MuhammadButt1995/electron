@@ -1,4 +1,4 @@
-import React from 'react';
+/* eslint-disable arrow-body-style */
 
 const HomePage = () => {
   return <div>page</div>;

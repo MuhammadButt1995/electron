@@ -2,6 +2,7 @@
 
 'use client';
 
+import { useEffect } from 'react';
 import { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
 import { shallow } from 'zustand/shallow';
@@ -58,8 +59,15 @@ export const useTrustedNetworkStatus = () => {
   const IS_ON_TRUSTED_NETWORK =
     TRUSTED_NETWORK_TYPE === 'ZPA' || TRUSTED_NETWORK_TYPE === 'VPN';
 
-  updateIsOnTrustedNetwork(IS_ON_TRUSTED_NETWORK);
-  updateTrustedNetworkType(TRUSTED_NETWORK_TYPE);
+  useEffect(() => {
+    updateIsOnTrustedNetwork(IS_ON_TRUSTED_NETWORK);
+    updateTrustedNetworkType(TRUSTED_NETWORK_TYPE);
+  }, [
+    IS_ON_TRUSTED_NETWORK,
+    TRUSTED_NETWORK_TYPE,
+    updateIsOnTrustedNetwork,
+    updateTrustedNetworkType,
+  ]);
 
   return trustedNetworkQuery;
 };

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable default-case */
 
@@ -7,14 +8,41 @@ import {
   nativeImage,
   MenuItemConstructorOptions,
   BrowserWindow,
+  screen,
 } from 'electron';
 import path from 'path';
+import positioner from 'electron-traywindow-positioner';
 
-import calculateTrayWindowPosition from '@utils/trayUtils';
+type AlignX = 'left' | 'center' | 'right';
+
+// y align if tray bar is left or right (default: down)
+type AlignY = 'up' | 'center' | 'down';
+
+type Alignment = {
+  x: AlignX;
+  y: AlignY;
+};
 
 let tray: Tray | null = null;
-let trayMenu: Electron.Menu | null = null; // Keep a reference to the menu
+let trayMenu: Electron.Menu | null = null;
 const isMacOS = process.platform === 'darwin';
+
+const customPosition = (mainWindow: BrowserWindow) => {
+  if (isMacOS) {
+    if (tray) {
+      const trayBounds = tray.getBounds();
+      const alignment: Alignment = { x: 'center', y: 'down' };
+      trayBounds.y += 5; // Add a few pixels below the top menu bar
+      positioner.position(mainWindow, trayBounds, alignment);
+    }
+  } else {
+    const { workArea } = screen.getPrimaryDisplay();
+    const windowBounds = mainWindow.getBounds();
+    const x = workArea.x + workArea.width - windowBounds.width - 10; // 10 pixels padding from the right
+    const y = workArea.y + workArea.height - windowBounds.height - 10; // 10 pixels padding from the bottom
+    mainWindow.setPosition(x, y);
+  }
+};
 
 export const createTray = (mainWindow: BrowserWindow) => {
   let trayIcon = nativeImage.createFromPath(
@@ -25,20 +53,13 @@ export const createTray = (mainWindow: BrowserWindow) => {
 
   tray = new Tray(trayIcon);
 
-  const { roundedXPosition, roundedYPosition } = calculateTrayWindowPosition(
-    tray,
-    mainWindow
-  );
-
-  mainWindow.setPosition(roundedXPosition, roundedYPosition, false);
-
   tray.on('click', () => {
     if (mainWindow.isVisible()) {
       mainWindow.hide();
-      return;
+    } else {
+      customPosition(mainWindow);
+      mainWindow.show();
     }
-
-    if (tray) mainWindow.show();
   });
 
   const buildMenuItems = (): (MenuItemConstructorOptions & {

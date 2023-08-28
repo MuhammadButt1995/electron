@@ -15,6 +15,7 @@ async function createWindow() {
     skipTaskbar: true, // The window will not show up in the taskbar
     webPreferences: {
       preload: join(__dirname, '../../preload/dist/index.cjs'),
+      webSecurity: false,
     },
   });
 

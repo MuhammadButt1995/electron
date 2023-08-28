@@ -48,7 +48,7 @@ const PasswordDataCard = () => {
       ? passwordDataQuery?.data?.data.daysLeft ?? 'ERROR'
       : 'ERROR',
     lastUpdated: passwordDataQuery?.data?.timestamp ?? '',
-    isLoading: IS_CONNECTED_AND_TRUSTED,
+    isLoading: IS_PASSWORD_DATA_LOADING,
     refreshRate: 'once per day',
   };
 

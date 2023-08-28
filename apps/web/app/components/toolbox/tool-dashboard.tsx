@@ -6,7 +6,7 @@ import { ItemsFilter } from '@/components/filtering/items-filter';
 import ToolboxSwitcher from '@/components/toolbox/toolbox-switcher';
 import ToolboxFilters from '@/components/toolbox/toolbox-filters';
 import ToolboxCommandMenu from '@/components/toolbox/toolbox-command-menu';
-import { ToolArray } from '@/lib/getAllTools';
+import { ToolArray } from '@/hooks/useToolData';
 
 type Props = {
   tools: ToolArray;

@@ -7,14 +7,14 @@ import '@/styles/globals.css';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Wrench, Home, LayoutDashboard } from 'lucide-react';
 import { Source_Sans_3 } from '@next/font/google';
-import Navbar from './components/layout/navbar';
+import Navbar from '@/components/layout/navbar';
 import Providers from '@/components/lib/provider';
 import { Button } from '@/components/ui/button';
 import { Toaster } from '@/components/ui/toaster';
 import { Separator } from '@/components/ui/separator';
-import { QueryRunner } from './components/layout/query-runner';
+import { QueryRunner } from '@/components/layout/query-runner';
 import { ThemeProvider } from '@/components/lib/theme-provider';
-import useInitialStates from './hooks/useInitialStates';
+import useInitialStates from '@/hooks/useInitialStates';
 
 const SOURCE_SANS_PRO = Source_Sans_3({
   subsets: ['latin'],
