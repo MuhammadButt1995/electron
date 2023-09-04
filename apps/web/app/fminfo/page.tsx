@@ -1,6 +1,7 @@
 'use client';
 
 import { useTabStateStore } from '@/store/tab-state-store';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
 import InternetTabPage from '@/components/fminfo/tab-page/internet-tab-page';
 import EnterpriseTabPage from '@/components/fminfo/tab-page/enterprise-tab-page';
@@ -23,6 +24,8 @@ const Fminfo = () => {
     enterpriseStatus,
   } = useTabStateStore();
 
+  const isWindows = useGlobalStateStore((state) => state.os === 'windows');
+
   return (
     <div className='p-6'>
       <div className='flex items-center justify-between'>
@@ -38,16 +41,21 @@ const Fminfo = () => {
       </div>
 
       <Tabs defaultValue='network' className='mt-4'>
-        <TabsList className='grid w-full grid-cols-3'>
+        <TabsList
+          className={`grid w-full ${isWindows ? 'grid-cols-3' : 'grid-cols-2'}`}
+        >
           <TabsTrigger value='network'>
             <TabButton name='Network' allOk={networkStatus} />
           </TabsTrigger>
-          <TabsTrigger value='identity-services'>
-            <TabButton
-              name='Identity Services'
-              allOk={identityServicesStatus}
-            />
-          </TabsTrigger>
+          {isWindows && (
+            <TabsTrigger value='identity-services'>
+              <TabButton
+                name='Identity Services'
+                allOk={identityServicesStatus}
+              />
+            </TabsTrigger>
+          )}
+
           <TabsTrigger value='device'>
             <TabButton name='Device' allOk={deviceStatus} />
           </TabsTrigger>
@@ -90,11 +98,13 @@ const Fminfo = () => {
           </Tabs>
         </TabsContent>
 
-        <TabsContent value='identity-services' className='pt-4'>
-          <ScrollArea className='h-[22rem] pr-4'>
-            <IdentityServicesTabPage />
-          </ScrollArea>
-        </TabsContent>
+        {isWindows && (
+          <TabsContent value='identity-services' className='pt-4'>
+            <ScrollArea className='h-[22rem] pr-4'>
+              <IdentityServicesTabPage />
+            </ScrollArea>
+          </TabsContent>
+        )}
 
         <TabsContent value='device' className='pt-4'>
           <ScrollArea className='h-[22rem] pr-4'>
