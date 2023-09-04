@@ -22,6 +22,9 @@ if (process.platform !== 'darwin') {
   app.setAppUserModelId(process.execPath);
 }
 
+if (process.platform === 'darwin') {
+  app.dock.hide();
+}
 /**
  * Prevent multiple instances
  */

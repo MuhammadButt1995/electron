@@ -24,14 +24,9 @@ const SOURCE_SANS_PRO = Source_Sans_3({
 
 const navItems = [
   {
-    title: 'Home',
-    icon: <Home className='w-4 h-4 mb-1' />,
-    href: '/',
-  },
-  {
     title: 'FMInfo',
     icon: <LayoutDashboard className='w-4 h-4 mb-1' />,
-    href: '/fminfo',
+    href: '/',
   },
   {
     title: 'Toolbox',
