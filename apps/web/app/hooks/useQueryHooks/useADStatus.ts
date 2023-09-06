@@ -21,7 +21,7 @@ export const ADStatusWindowsResponse = FmInfoAPIResponseSchema.and(
 export const ADStatusMacResponse = FmInfoAPIResponseSchema.and(
   z.object({
     data: z.object({
-      ad_bind: z.boolean(),
+      adbind: z.boolean(),
       isBound: IsBoundEnum,
     }),
   })
@@ -33,7 +33,7 @@ export type ADStatusResponse =
 export function isADStatusMacResponse(
   data: ADStatusResponse
 ): data is z.infer<typeof ADStatusMacResponse> {
-  return 'ad_bind' in data;
+  return 'adBind' in data;
 }
 
 export function isADStatusWindowsResponse(

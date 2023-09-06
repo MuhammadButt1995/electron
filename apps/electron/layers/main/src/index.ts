@@ -22,7 +22,7 @@ if (process.platform !== 'darwin') {
   app.setAppUserModelId(process.execPath);
 }
 
-if (process.platform === 'darwin') {
+if (process.platform === 'darwin' && !import.meta.env.DEV) {
   app.dock.hide();
 }
 /**
