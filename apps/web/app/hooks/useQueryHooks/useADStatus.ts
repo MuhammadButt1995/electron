@@ -60,6 +60,7 @@ export const useADStatus = () => {
     refetchIntervalInBackground: true,
     useErrorBoundary: true,
     networkMode: 'always',
+    enabled: os !== 'undetermined',
   });
 
   return ADStatusQuery;
