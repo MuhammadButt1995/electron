@@ -34,7 +34,7 @@ const ADStatusCard = () => {
     rating: IS_AD_STATUS_LOADING
       ? 'loading'
       : (ADStatusQuery?.data?.data.rating as FminfoRating) ?? 'error',
-    title: IS_MACOS ? 'On-Prem Active Directory' : 'Azure Active Directory',
+    title: IS_MACOS ? 'Active Directory' : 'Azure Active Directory',
     value: IS_AD_STATUS_LOADING
       ? 'LOADING'
       : ADStatusQuery?.data?.data.isBound ?? 'ERROR',

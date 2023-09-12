@@ -21,7 +21,7 @@ export const ADStatusWindowsResponse = FmInfoAPIResponseSchema.and(
 export const ADStatusMacResponse = FmInfoAPIResponseSchema.and(
   z.object({
     data: z.object({
-      adbind: z.boolean(),
+      adBind: z.boolean(),
       isBound: IsBoundEnum,
     }),
   })

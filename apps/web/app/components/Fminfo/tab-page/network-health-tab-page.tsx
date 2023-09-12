@@ -46,6 +46,8 @@ const NetworkHealthTabPage = () => {
     (state) => state.isConnectedToInternet
   );
 
+  const isMac = useGlobalStateStore((state) => state.os === 'macos');
+
   const wifiDataQuery = useWiFiData();
   const networkType = useGlobalStateStore((state) => state.trustedNetworkType);
   const networkSpeedQuery = useNetworkSpeed(networkType);
@@ -210,54 +212,36 @@ const NetworkHealthTabPage = () => {
                             What are Wi-Fi Connection Metrics?
                           </AccordionTrigger>
                           <AccordionContent>
-                            Wi-Fi connection metrics are crucial to understand
-                            the performance and quality of your Wi-Fi
-                            connection. In simple terms, these metrics tell you
-                            how strong your Wi-Fi signal is, what kind of
-                            technology it&apos;s using, and how well it&apos;s
-                            performing.
+                            Wi-Fi connection metrics are like a health checkup
+                            for your internet. They help you understand how well
+                            your Wi-Fi is doing so you can enjoy smoother video
+                            calls, faster downloads, and more.
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value='item-2'>
                           <AccordionTrigger>Signal Strength</AccordionTrigger>
                           <AccordionContent>
-                            Think of your Wi-Fi signal strength like the bars on
-                            your cell phone. More bars mean a stronger
-                            connection. When the signal strength is high, your
-                            device is able to communicate effectively with the
-                            Wi-Fi network, and you should experience a stable,
-                            fast internet connection. On the other hand, a low
-                            signal strength could lead to a slower connection or
-                            possible interruptions.
+                            {isMac
+                              ? "Signal strength shows how strong your Wi-Fi connection is. You'll see it as a negative number like '-30' or '-70.' A rule of thumb: the closer the number is to zero, the stronger your connection. For example, -30 is very strong, but -80 is pretty weak."
+                              : 'Think of your Wi-Fi signal strength like the bars on your cell phone. More bars mean a stronger connection. When the signal strength is high, your device communicates effectively with the Wi-Fi network, leading to a stable, fast internet experience.'}
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value='item-3'>
                           <AccordionTrigger>Radio Type</AccordionTrigger>
                           <AccordionContent>
-                            The radio type refers to the Wi-Fi technology your
-                            device is using to connect to the Wi-Fi network.
-                            This is often represented as 802.11 followed by a
-                            letter or series of letters. Devices using Wi-Fi 5
-                            (802.11ac) or Wi-Fi 6 (802.11ax) are considered
-                            good, while Wi-Fi 4 (802.11n) is adequate, and
-                            anything older is poor and may limit your internet
-                            speed.
+                            {isMac
+                              ? "Radio Type on macOS shows the speed at which your device last sent data over Wi-Fi, represented by a number like '1300.' This is different from the typical Radio Type on other systems (802.11ac, 802.11ax, etc) but serves as a real-time indicator of your Wi-Fi performance. A higher number means faster data travel, and generally, anything above 500 is quite good."
+                              : "The radio type refers to the Wi-Fi technology your device is using. Numbers like '802.11ac' or '802.11ax' tell you if you're on a modern, fast connection. Wi-Fi 5 (802.11ac) or Wi-Fi 6 (802.11ax) are the best to have. Older numbers may mean slower speeds."}
                           </AccordionContent>
                         </AccordionItem>
                         <AccordionItem value='item-4'>
                           <AccordionTrigger>Channel</AccordionTrigger>
                           <AccordionContent>
-                            This is like the lane your Wi-Fi uses on a highway.
-                            If too many devices are in the same lane, it can get
-                            crowded and slow everyone down. Channels 1, 6, and
-                            11 are often the least crowded in the 2.4 GHz band,
-                            while higher channels in the 5 GHz band are
-                            typically less congested. If you notice slower
-                            speeds, it may be because of congestion on that
-                            channel. In many Wi-Fi routers, you can manually
-                            change the channel, or you can set it to
-                            &quot;Auto,&quot; allowing the router to
-                            automatically select the best available channel.
+                            The channel is like the lane your Wi-Fi uses on a
+                            highway. If too many devices are on the same
+                            channel, it can slow down your internet. You can
+                            change your channel settings from your router&APOS;s
+                            admin page to potentially improve speed.
                           </AccordionContent>
                         </AccordionItem>
                       </Accordion>
