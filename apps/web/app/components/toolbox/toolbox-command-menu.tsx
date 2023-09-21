@@ -87,11 +87,6 @@ const ToolboxCommandMenu = ({ filteredTools }: ToolboxCommandMenuProps) => {
                     className='grid grid-cols-2 row-span-2 gap-2 rounded-lg w-44 aria-selected:bg-brand-teal/20 aria-selected:text-brand-teal'
                     value={tool.name.toLowerCase()} // use lowercase for value
                   >
-                    <img
-                      src={tool.icon}
-                      alt=''
-                      className='w-10 h-10 col-span-1 row-span-2'
-                    />
                     <div>{tool.name}</div>
                     <div className='text-xs text-primary'>{tool.type}</div>
                   </CommandItem>

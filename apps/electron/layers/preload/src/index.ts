@@ -4,44 +4,15 @@
 
 import { contextBridge, ipcRenderer } from 'electron';
 
-export type ConnectionStatus =
-  | 'LOADING'
-  | 'CONNECTED'
-  | 'NOT CONNECTED'
-  | 'ERROR';
+const isDev = import.meta.env.DEV;
 
-export type WiFiStatus = 'LOADING' | 'RELIABLE' | 'DECENT' | 'SLOW' | 'ERROR';
+contextBridge.exposeInMainWorld('navigate', (route: string) => {
+  ipcRenderer.send('navigate', route);
+});
 
-export type DiskSpaceState = 'LOADING' | 'LOW' | 'MEDIUM' | 'HIGH' | 'ERROR';
-
-// Expose version number to renderer
-contextBridge.exposeInMainWorld(
-  'onInternetStatusChange',
-  (state: ConnectionStatus) => ipcRenderer.send('onInternetStatusChange', state)
-);
-
-contextBridge.exposeInMainWorld('onADStatusChange', (state: ConnectionStatus) =>
-  ipcRenderer.send('onADStatusChange', state)
-);
-
-contextBridge.exposeInMainWorld(
-  'onDomainStatusChange',
-  (state: ConnectionStatus) => ipcRenderer.send('onDomainStatusChange', state)
-);
-
-contextBridge.exposeInMainWorld('onWiFiStatusChange', (state: WiFiStatus) =>
-  ipcRenderer.send('onWiFiStatusChange', state)
-);
-
-contextBridge.exposeInMainWorld(
-  'onLDAPPasswordExpiresInChange',
-  (state: string) => ipcRenderer.send('onLDAPPasswordExpiresInChange', state)
-);
-
-contextBridge.exposeInMainWorld(
-  'onDiskSpaceStatusChange',
-  (state: DiskSpaceState) => ipcRenderer.send('onDiskSpaceStatusChange', state)
-);
+contextBridge.exposeInMainWorld('meta', {
+  isDev,
+});
 
 /**
  * The "Main World" is the JavaScript context that your main renderer code runs in.

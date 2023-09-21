@@ -14,6 +14,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+import { useDaaSStatus } from './hooks/useQueryHooks/useDaasStatus';
+import { useGlobalStateStore } from './store/global-state-store';
+
 const Fminfo = () => {
   const {
     networkStatus,
@@ -22,6 +25,14 @@ const Fminfo = () => {
     internetStatus,
     enterpriseStatus,
   } = useTabStateStore();
+
+  const daasStatusQuery = useDaaSStatus();
+
+  const updateIsDaaSMachine = useGlobalStateStore(
+    (state) => state.updateIsDaaSMachine
+  );
+
+  updateIsDaaSMachine(daasStatusQuery?.data?.data.isOnDaaS);
 
   return (
     <div className='p-6'>

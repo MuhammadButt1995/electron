@@ -1,22 +1,10 @@
-import { BrowserWindow, app, ipcMain } from 'electron';
+/* eslint-disable consistent-return */
+import { BrowserWindow, app, ipcMain, protocol, Notification } from 'electron';
 import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
 
-import { createTray, updateTrayMenu } from './tray';
-
-const iconPaths = {
-  loading: path.join(__dirname, '../assets/loading.png'),
-  check: path.join(__dirname, '../assets/check.png'),
-  warning: path.join(__dirname, '../assets/warning.png'),
-  x_mark: path.join(__dirname, '../assets/cross.png'),
-};
-
-const createStatusChangeHandler =
-  (menuItemId: string) => (event: any, data: any) => {
-    console.log(data);
-    updateTrayMenu(data, menuItemId, iconPaths);
-  };
+import { createTray } from './tray';
 
 if (process.platform !== 'darwin') {
   app.setAppUserModelId(process.execPath);
@@ -60,25 +48,32 @@ app.on('window-all-closed', () => {
  * Create app window when background process will be ready
  */
 
-const PATH_TO_NEXT_APP = path.join(__dirname, '../../../../web');
+const PATH_TO_NEXT_APP = path.join(
+  __dirname,
+  import.meta.env.DEV ? '../../../../web' : '../../../web'
+);
 const PORT = 3000;
 let mainWindow: BrowserWindow;
+
+function navigateToFile(filePath: string) {
+  if (mainWindow) {
+    const pageUrl = `file://${path.resolve(
+      `${process.resourcesPath}/app/web/out${filePath}.html`
+    )}`;
+    mainWindow.loadURL(pageUrl);
+  }
+}
 
 app.on('ready', async () => {
   await prepareRenderer(PATH_TO_NEXT_APP, PORT);
   mainWindow = await restoreOrCreateWindow();
   const tray = createTray(mainWindow);
+});
 
-  ipcMain.on('onInternetStatusChange', createStatusChangeHandler('internet'));
-  ipcMain.on('onADStatusChange', createStatusChangeHandler('AD'));
-  ipcMain.on('onDomainStatusChange', createStatusChangeHandler('domain'));
-  ipcMain.on('onWiFiStatusChange', createStatusChangeHandler('wifi'));
-  ipcMain.on(
-    'onLDAPPasswordExpiresInChange',
-    createStatusChangeHandler('ldap-password')
-  );
-  ipcMain.on(
-    'onDiskSpaceStatusChange',
-    createStatusChangeHandler('disk-space')
-  );
+ipcMain.on('navigate', (event, route) => {
+  if (route === '/') {
+    navigateToFile('/index');
+  } else {
+    navigateToFile(route);
+  }
 });

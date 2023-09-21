@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
+import { useState, useEffect } from 'react';
+
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -17,13 +22,31 @@ interface NavbarProps extends React.HTMLAttributes<HTMLElement> {
 
 const Navbar = ({ className, items, ...props }: NavbarProps) => {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const [isDev, setIsDev] = useState(true);
+
+  useEffect(() => {
+    if (window) {
+      setIsDev(window.meta.isDev);
+    }
+  }, []);
+
+  const navigate = (path: string) => {
+    !isDev
+      ? window.navigate
+        ? window.navigate(path)
+        : ''
+      : router.replace(path);
+  };
 
   return (
     <nav className={`flex w-full justify-around px-2 py-2 `}>
       {items.map((item) => (
-        <Link
+        <Button
+          variant='ghost'
           key={item.href}
-          href={item.href}
+          onClick={() => navigate(item.href)}
           className={cn(
             buttonVariants({
               variant:
@@ -45,7 +68,7 @@ const Navbar = ({ className, items, ...props }: NavbarProps) => {
             {item.icon}
             {item.title}
           </div>
-        </Link>
+        </Button>
       ))}
 
       <Button variant='ghost' asChild className='px-2 py-6'>

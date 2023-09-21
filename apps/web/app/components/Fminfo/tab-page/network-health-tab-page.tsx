@@ -240,7 +240,7 @@ const NetworkHealthTabPage = () => {
                             The channel is like the lane your Wi-Fi uses on a
                             highway. If too many devices are on the same
                             channel, it can slow down your internet. You can
-                            change your channel settings from your router&APOS;s
+                            change your channel settings from your route&apos;s
                             admin page to potentially improve speed.
                           </AccordionContent>
                         </AccordionItem>

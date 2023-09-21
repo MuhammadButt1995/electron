@@ -42,10 +42,6 @@ const useInitialStates = () => {
     updateInternetConnectionType,
     updateIsConnectedToInternet,
   ]);
-
-  useEffect(() => {
-    window.onInternetStatusChange(internetConnectionValue);
-  }, [internetConnectionValue]);
 };
 
 export default useInitialStates;

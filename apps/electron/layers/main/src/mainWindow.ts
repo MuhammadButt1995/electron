@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from 'electron';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { format } from 'url';
 
 async function createWindow() {
@@ -25,36 +25,16 @@ async function createWindow() {
     browserWindow.hide();
   });
 
-  /**
-   * If you install `show: true` then it can cause issues when trying to close the window.
-   * Use `show: false` and listener events `ready-to-show` to fix these issues.
-   *
-   * @see https://github.com/electron/electron/issues/25012
-
-  browserWindow.on('ready-to-show', () => {
-    browserWindow?.show();
-
-    if (import.meta.env.DEV) {
-      browserWindow?.webContents.openDevTools();
-    }
-  });
-     */
-
-  /**
-   * URL for main window.
-   * Vite dev server for development.
-   * `file://../renderer/index.html` for production and test
-   */
   const pageUrl =
     import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_DEV_SERVER_URL
-      : format({
-          pathname: join(app.getAppPath(), '..', 'web', 'out', 'index.html'),
-          protocol: 'file:',
-          slashes: true,
-        });
+      : `file://${resolve(`${process.resourcesPath}/app/web/out/index.html`)}`;
 
   await browserWindow.loadURL(pageUrl);
+
+  if (!import.meta.env.DEV) {
+    browserWindow.webContents.openDevTools();
+  }
 
   return browserWindow;
 }

@@ -28,11 +28,11 @@ const navItems = [
     icon: <LayoutDashboard className='w-4 h-4 mb-1' />,
     href: '/',
   },
-  {
-    title: 'Toolbox',
-    icon: <Wrench className='w-4 h-4 mb-1' />,
-    href: '/toolbox',
-  },
+  // {
+  //   title: 'Toolbox',
+  //   icon: <Wrench className='w-4 h-4 mb-1' />,
+  //   href: '/toolbox',
+  // },
 ];
 
 export default function RootLayout({ children }: { children: JSX.Element }) {

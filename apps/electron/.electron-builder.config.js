@@ -23,15 +23,11 @@ const config = {
     output: 'dist',
     buildResources: 'buildResources',
   },
-  files: [
-    'layers/**/dist/**',
-    'layers/**/assets/**',
-    'buildResources',
-    'layers/main/src/lib/websocket/worker.ts',
-  ],
+
+  files: ['layers/**/dist/**', 'layers/**/assets/**', 'buildResources'],
   extraResources: {
     from: NEXT_EXPORT_OUT_DIR,
-    to: 'web/out',
+    to: 'app/web/out',
   },
   extraMetadata: {
     version: process.env.VITE_APP_VERSION,
