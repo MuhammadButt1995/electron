@@ -32,7 +32,7 @@ const Fminfo = () => {
     (state) => state.updateIsDaaSMachine
   );
 
-  updateIsDaaSMachine(daasStatusQuery?.data?.data.isOnDaaS);
+  updateIsDaaSMachine(daasStatusQuery?.data?.data.isOnDaas);
 
   return (
     <div className='p-6'>
