@@ -6,6 +6,7 @@ import { IdCardIcon } from '@radix-ui/react-icons';
 
 import { useDeviceData } from '@/hooks/useQueryHooks/useDeviceData';
 import { camelToNormalText } from '@/lib/utils';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
 import BatteryHealthCard from '@/components/fminfo/cards/battery-health-card';
 import DiskUsageCard from '@/components/fminfo/cards/disk-usage-card';
@@ -19,7 +20,10 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
 const DeviceTabPage = () => {
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
   const deviceDataQuery = useDeviceData();
+
+  console.log('hello');
 
   const IS_DEVICE_DATA_LOADING =
     deviceDataQuery.isLoading || deviceDataQuery.isFetching;
@@ -34,13 +38,16 @@ const DeviceTabPage = () => {
 
   return (
     <div className='grid w-full grid-cols-10 gap-4'>
-      <div className='col-span-5'>
-        <BatteryHealthCard />
-      </div>
-
-      <div className='col-span-5'>
-        <SSDHealthCard />
-      </div>
+      {!isDaaSMachine && (
+        <>
+          <div className='col-span-5'>
+            <BatteryHealthCard />
+          </div>
+          <div className='col-span-5'>
+            <SSDHealthCard />
+          </div>
+        </>
+      )}
 
       <div className='col-span-5'>
         <DiskUsageCard />
