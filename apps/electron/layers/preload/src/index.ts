@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('navigate', (route: string) => {
 
 contextBridge.exposeInMainWorld('meta', {
   isDev,
+  openLink: (link: string) => ipcRenderer.send('window-open-link'),
   isOnDaas: () => ipcRenderer.sendSync('check-daas'),
 });
 

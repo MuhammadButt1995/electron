@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import { BrowserWindow, app, ipcMain, protocol, Notification } from 'electron';
+import { BrowserWindow, app, ipcMain, shell } from 'electron';
 import restoreOrCreateWindow from '@main/mainWindow';
 import prepareRenderer from 'electron-next';
 import path from 'path';
@@ -83,4 +83,8 @@ ipcMain.on('check-daas', (event) => {
   const isOnDaas = envKeys.some((key) => key.includes('ViewClient'));
   // eslint-disable-next-line no-param-reassign
   event.returnValue = isOnDaas;
+});
+
+ipcMain.on('window-open-link', (_event, args) => {
+  shell.openExternal(args);
 });
