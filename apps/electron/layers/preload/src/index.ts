@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('navigate', (route: string) => {
 
 contextBridge.exposeInMainWorld('meta', {
   isDev,
+  isOnDaas: () => ipcRenderer.sendSync('check-daas'),
 });
 
 /**

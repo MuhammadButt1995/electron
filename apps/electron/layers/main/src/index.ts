@@ -77,3 +77,10 @@ ipcMain.on('navigate', (event, route) => {
     navigateToFile(route);
   }
 });
+
+ipcMain.on('check-daas', (event) => {
+  const envKeys = Object.keys(process.env);
+  const isOnDaas = envKeys.some((key) => key.includes('ViewClient'));
+  // eslint-disable-next-line no-param-reassign
+  event.returnValue = isOnDaas;
+});

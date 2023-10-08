@@ -34,6 +34,9 @@ const Fminfo = () => {
 
   updateIsDaaSMachine(daasStatusQuery?.data?.data.isOnDaas);
 
+  const isOnDaas = window.meta.isOnDaas();
+  console.log(`isONDasS: ${isOnDaas}`);
+
   return (
     <div className='p-6'>
       <div className='flex items-center justify-between'>

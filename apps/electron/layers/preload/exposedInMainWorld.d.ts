@@ -1,4 +1,4 @@
 interface Window {
     readonly navigate: (route: string) => void;
-    readonly meta: { isDev: any; };
+    readonly meta: { isDev: any; isOnDaas: () => any; };
 }

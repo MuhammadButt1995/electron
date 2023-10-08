@@ -19,6 +19,7 @@ const url = 'http://localhost:8000/tools/ssd-health';
 const ONE_DAY_IN_MS = 86400000;
 
 export const useSSDHealth = () => {
+  const isDaaSMachine = window.meta.isOnDaas();
   const SSDHealthQuery = useQuery({
     queryKey: [url],
     queryFn: () => fetchAndParseData(url, SSDHealthResponse),
@@ -28,6 +29,7 @@ export const useSSDHealth = () => {
     refetchOnWindowFocus: false,
     useErrorBoundary: true,
     networkMode: 'always',
+    enabled: !isDaaSMachine,
   });
 
   return SSDHealthQuery;

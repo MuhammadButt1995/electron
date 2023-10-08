@@ -20,6 +20,7 @@ const url = 'http://localhost:8000/tools/battery-health';
 const ONE_DAY_IN_MS = 86400000;
 
 export const useBatteryHealth = () => {
+  const isDaaSMachine = window.meta.isOnDaas();
   const batteryHealthQuery = useQuery({
     queryKey: [url],
     queryFn: () => fetchAndParseData(url, BatteryHealthResponse),
@@ -29,6 +30,7 @@ export const useBatteryHealth = () => {
     refetchOnWindowFocus: false,
     useErrorBoundary: true,
     networkMode: 'always',
+    enabled: !isDaaSMachine,
   });
 
   return batteryHealthQuery;
