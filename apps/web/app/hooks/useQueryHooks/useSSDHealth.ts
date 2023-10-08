@@ -15,7 +15,7 @@ export const SSDHealthResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/ssd-health';
+const url = 'http://localhost:8567/tools/ssd-health';
 const ONE_DAY_IN_MS = 86400000;
 
 export const useSSDHealth = () => {

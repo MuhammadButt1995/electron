@@ -42,7 +42,7 @@ export function isADStatusWindowsResponse(
   return 'azureAdJoined' in data;
 }
 
-const url = 'http://localhost:8000/tools/ad-status';
+const url = 'http://localhost:8567/tools/ad-status';
 
 export const useADStatus = () => {
   const os = useOs();

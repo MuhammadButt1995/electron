@@ -25,7 +25,7 @@ export const TrustedNetworkStatusResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/trusted-network-status';
+const url = 'http://localhost:8567/tools/trusted-network-status';
 
 export const useTrustedNetworkStatus = () => {
   const [updateIsOnTrustedNetwork, updateTrustedNetworkType] =

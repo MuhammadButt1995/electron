@@ -14,7 +14,7 @@ export const PasswordDataResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/password-data';
+const url = 'http://localhost:8567/tools/password-data';
 const ONE_DAY_IN_MS = 86400000;
 
 export const usePasswordData = () => {

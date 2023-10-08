@@ -15,7 +15,7 @@ export const DomainDataResponse = SucessfulAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/domain-data';
+const url = 'http://localhost:8567/tools/domain-data';
 
 export const useDomainData = () => {
   const domainDataQuery = useQuery({

@@ -13,7 +13,7 @@ export const DaaSStatusResponse = SucessfulAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/daas-status';
+const url = 'http://localhost:8567/tools/daas-status';
 
 export const useDaaSStatus = () => {
   const daasStatusQuery = useQuery({

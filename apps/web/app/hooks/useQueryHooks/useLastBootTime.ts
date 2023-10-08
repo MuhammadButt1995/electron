@@ -15,7 +15,7 @@ export const LastBootTimeResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/last-boottime';
+const url = 'http://localhost:8567/tools/last-boottime';
 const ONE_DAY_IN_MS = 86400000;
 
 export const useLastBootTime = () => {

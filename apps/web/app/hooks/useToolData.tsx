@@ -28,7 +28,7 @@ export const useAllToolsData = () =>
   useQuery({
     queryKey: ['all-tools'],
     queryFn: async () => {
-      const res = await fetch('http://127.0.0.1:8000/tools');
+      const res = await fetch('http://127.0.0.1:8567/tools');
 
       if (!res.ok) throw new Error('Failed to fetch data');
 
@@ -47,7 +47,7 @@ export const useCommandToolData = (tool: CommandTool) => {
   return useQuery({
     queryKey: ['toolData', tool?.id],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:8000/tools/${tool?.id}`);
+      const res = await fetch(`http://localhost:8567/tools/${tool?.id}`);
 
       if (!res.ok)
         throw new Error(`Error fetching tool data for ID: ${tool?.id}`);
@@ -85,7 +85,7 @@ export const useToggleToolData = (tool: ToggleTool) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async () => {
-      const res = await fetch(`http://localhost:8000/tools/${tool?.id}`);
+      const res = await fetch(`http://localhost:8567/tools/${tool?.id}`);
 
       if (!res.ok)
         throw new Error(`Error fetching tool data for ID: ${tool?.id}`);

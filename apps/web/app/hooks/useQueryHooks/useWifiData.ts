@@ -37,7 +37,7 @@ export const WiFiDataResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/wifi-details';
+const url = 'http://localhost:8567/tools/wifi-details';
 const FIVE_MINUTES_IN_MS = 300000;
 
 export const useWiFiData = () => {

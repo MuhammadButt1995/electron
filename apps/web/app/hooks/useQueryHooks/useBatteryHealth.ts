@@ -16,7 +16,7 @@ export const BatteryHealthResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/battery-health';
+const url = 'http://localhost:8567/tools/battery-health';
 const ONE_DAY_IN_MS = 86400000;
 
 export const useBatteryHealth = () => {

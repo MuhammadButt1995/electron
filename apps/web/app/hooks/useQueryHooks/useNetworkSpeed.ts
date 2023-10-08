@@ -17,7 +17,7 @@ export const NetworkSpeedResponse = SucessfulAPIResponseSchema.and(
 );
 
 export const useNetworkSpeed = (networkType: TrustedNetworkType) => {
-  const url = `http://localhost:8000/tools/network-speed?is_on_vpn=${
+  const url = `http://localhost:8567/tools/network-speed?is_on_vpn=${
     networkType === 'VPN'
   }`;
   const networkSpeedQuery = useQuery({

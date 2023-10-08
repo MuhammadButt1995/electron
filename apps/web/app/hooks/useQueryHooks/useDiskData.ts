@@ -19,7 +19,7 @@ export const DiskSpaceResponse = FmInfoAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/disk-usage';
+const url = 'http://localhost:8567/tools/disk-usage';
 const ONE_HOUR_IN_MS = 3600000;
 
 export const useDiskSpace = () => {

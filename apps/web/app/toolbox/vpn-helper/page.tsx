@@ -11,7 +11,7 @@ const useResetDNSMutation = () => {
   return useQuery({
     queryKey: ['reset-dns'],
     queryFn: async () => {
-      const res = await fetch('http://127.0.0.1:8000/tools/reset-dns');
+      const res = await fetch('http://127.0.0.1:8567/tools/reset-dns');
 
       if (!res.ok) throw new Error('Failed to fetch data');
 

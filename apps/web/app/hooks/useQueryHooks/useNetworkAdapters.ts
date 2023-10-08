@@ -13,7 +13,7 @@ export const NetworkAdaptersResponse = SucessfulAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/network-adapters';
+const url = 'http://localhost:8567/tools/network-adapters';
 
 export const useNetworkAdapters = () => {
   const networkResponseQuery = useQuery({

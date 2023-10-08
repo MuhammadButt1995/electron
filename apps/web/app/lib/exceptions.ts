@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 
 export class TalosServerDownError extends Error {
-  constructor(message = 'Talos Server is not running on localhost:8000.') {
+  constructor(message = 'Talos Server is not running on localhost:8567.') {
     super(message);
     this.name = 'TalosServerDownError';
   }

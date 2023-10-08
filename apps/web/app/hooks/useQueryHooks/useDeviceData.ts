@@ -17,7 +17,7 @@ export const DeviceDataResponse = SucessfulAPIResponseSchema.and(
   })
 );
 
-const url = 'http://localhost:8000/tools/device-data';
+const url = 'http://localhost:8567/tools/device-data';
 
 export const useDeviceData = () => {
   const deviceDataQuery = useQuery({

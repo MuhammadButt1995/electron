@@ -125,7 +125,7 @@ const Bookmarks = () => {
   const IS_MUTATION_LOADING = mutationQuery.isLoading;
 
   function getEndpoint(data: z.infer<typeof FormSchema>) {
-    const baseURL = `http://localhost:8000/tools/${data.action}-bookmarks`;
+    const baseURL = `http://localhost:8567/tools/${data.action}-bookmarks`;
     const selectedBrowsers = data.items.filter(Boolean);
     const browserQueryParam = selectedBrowsers.length
       ? `?browser=${selectedBrowsers.join(',')}`
