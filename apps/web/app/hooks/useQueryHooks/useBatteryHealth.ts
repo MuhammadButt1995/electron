@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAndParseData } from '@/lib/fetchAndParseData';
 import { FmInfoAPIResponseSchema } from '@/types/api';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
 export const BatteryHealthResponse = FmInfoAPIResponseSchema.and(
   z.object({
@@ -20,7 +21,7 @@ const url = 'http://localhost:8567/tools/battery-health';
 const ONE_DAY_IN_MS = 86400000;
 
 export const useBatteryHealth = () => {
-  const isDaaSMachine = window.meta.isOnDaas();
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
   const batteryHealthQuery = useQuery({
     queryKey: [url],
     queryFn: () => fetchAndParseData(url, BatteryHealthResponse),

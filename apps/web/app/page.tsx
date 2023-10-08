@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useTabStateStore } from '@/store/tab-state-store';
 
 import InternetTabPage from '@/components/fminfo/tab-page/internet-tab-page';
@@ -14,7 +15,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { useDaaSStatus } from './hooks/useQueryHooks/useDaasStatus';
 import { useGlobalStateStore } from './store/global-state-store';
 
 const Fminfo = () => {
@@ -26,16 +26,15 @@ const Fminfo = () => {
     enterpriseStatus,
   } = useTabStateStore();
 
-  const daasStatusQuery = useDaaSStatus();
-
   const updateIsDaaSMachine = useGlobalStateStore(
     (state) => state.updateIsDaaSMachine
   );
 
-  updateIsDaaSMachine(daasStatusQuery?.data?.data.isOnDaas);
-
-  const isOnDaas = window.meta.isOnDaas();
-  console.log(`isONDasS: ${isOnDaas}`);
+  useEffect(() => {
+    const isOnDaas = window.meta.isOnDaas();
+    console.log(`isONDasS: ${isOnDaas}`);
+    updateIsDaaSMachine(isOnDaas);
+  }, [updateIsDaaSMachine]);
 
   return (
     <div className='p-6'>
