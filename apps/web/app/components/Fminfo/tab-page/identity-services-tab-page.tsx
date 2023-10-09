@@ -24,6 +24,11 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
 const IdentityServicesTabPage = () => {
+  const onLinkClick = (event: any) => {
+    event.preventDefault();
+    window.meta.openLink('');
+  };
+
   const domainDataQuery = useDomainData();
 
   const IS_DOMAIN_DATA_LOADING =

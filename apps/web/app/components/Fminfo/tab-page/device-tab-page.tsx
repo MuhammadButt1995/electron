@@ -23,8 +23,6 @@ const DeviceTabPage = () => {
   const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
   const deviceDataQuery = useDeviceData();
 
-  console.log('hello');
-
   const IS_DEVICE_DATA_LOADING =
     deviceDataQuery.isLoading || deviceDataQuery.isFetching;
 

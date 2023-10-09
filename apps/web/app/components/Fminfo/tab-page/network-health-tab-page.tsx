@@ -42,6 +42,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
 const NetworkHealthTabPage = () => {
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
   const IS_CONNECTED_TO_INTERNET = useGlobalStateStore(
     (state) => state.isConnectedToInternet
   );
@@ -307,9 +308,11 @@ const NetworkHealthTabPage = () => {
         </TableCard>
       </div>
 
-      <div className='col-span-1 row-span-1'>
-        <WifiSignalCard />
-      </div>
+      {!isDaaSMachine && (
+        <div className='col-span-5'>
+          <WifiSignalCard />
+        </div>
+      )}
 
       <div className='col-span-1 row-span-1'>
         <Card

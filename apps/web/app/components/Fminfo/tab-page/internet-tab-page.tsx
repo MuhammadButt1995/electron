@@ -21,11 +21,15 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { useGlobalStateStore } from '@/store/global-state-store';
 
 const InternetTabPage = () => {
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
   const networkAdapterQuery = useNetworkAdapters();
   const IS_NETWORK_ADAPTER_LOADING =
     networkAdapterQuery.isLoading || networkAdapterQuery.isFetching;
+
+  console.log('hello');
 
   return (
     <div className='grid w-full grid-cols-10 gap-4'>
@@ -33,9 +37,11 @@ const InternetTabPage = () => {
         <InternetConnectionCard />
       </div>
 
-      <div className='col-span-5'>
-        <WifiSignalCard />
-      </div>
+      {!isDaaSMachine && (
+        <div className='col-span-5'>
+          <WifiSignalCard />
+        </div>
+      )}
 
       <div className='col-span-7 pt-4'>
         <TableCard
