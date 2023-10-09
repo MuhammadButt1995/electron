@@ -32,7 +32,6 @@ const Fminfo = () => {
 
   useEffect(() => {
     const isOnDaas = window.meta.isOnDaas();
-    console.log(`isONDasSss: ${isOnDaas}`);
     updateIsDaaSMachine(isOnDaas);
   }, [updateIsDaaSMachine]);
 
