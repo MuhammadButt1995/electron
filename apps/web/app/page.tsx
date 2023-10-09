@@ -30,10 +30,25 @@ const Fminfo = () => {
     (state) => state.updateIsDaaSMachine
   );
 
+  const updateIsOnTrustedNetwork = useGlobalStateStore(
+    (state) => state.updateIsOnTrustedNetwork
+  );
+
+  const updateTrustedNetworkType = useGlobalStateStore(
+    (state) => state.updateTrustedNetworkType
+  );
+
   useEffect(() => {
     const isOnDaas = window.meta.isOnDaas();
     updateIsDaaSMachine(isOnDaas);
-  }, [updateIsDaaSMachine]);
+
+    if (isOnDaas) {
+      updateTrustedNetworkType('DaaS');
+      updateIsOnTrustedNetwork(true);
+    }
+  }, [updateIsDaaSMachine, updateIsOnTrustedNetwork, updateTrustedNetworkType]);
+
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
 
   return (
     <div className='p-6'>
@@ -68,13 +83,20 @@ const Fminfo = () => {
         <TabsContent value='network'>
           <Tabs defaultValue='internet' className='mt-4'>
             <div className='flex items-center justify-start space-x-8'>
-              <TabsList className='grid grid-cols-2 w-fit'>
+              <TabsList
+                className={`grid w-fit ${
+                  isDaaSMachine ? 'grid-cols-1' : 'grid-cols-2'
+                }`}
+              >
                 <TabsTrigger value='internet'>
                   <TabButton name='Internet' allOk={internetStatus} />
                 </TabsTrigger>
-                <TabsTrigger value='enterprise'>
-                  <TabButton name='Enterprise' allOk={enterpriseStatus} />
-                </TabsTrigger>
+
+                {!isDaaSMachine && (
+                  <TabsTrigger value='enterprise'>
+                    <TabButton name='Enterprise' allOk={enterpriseStatus} />
+                  </TabsTrigger>
+                )}
               </TabsList>
 
               <div>

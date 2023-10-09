@@ -28,6 +28,8 @@ export const TrustedNetworkStatusResponse = FmInfoAPIResponseSchema.and(
 const url = 'http://localhost:8567/tools/trusted-network-status';
 
 export const useTrustedNetworkStatus = () => {
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
+
   const [updateIsOnTrustedNetwork, updateTrustedNetworkType] =
     useGlobalStateStore(
       (state) => [
@@ -45,6 +47,7 @@ export const useTrustedNetworkStatus = () => {
     refetchOnWindowFocus: true,
     useErrorBoundary: true,
     networkMode: 'always',
+    enabled: !isDaaSMachine,
   });
 
   const trustedNetworkStatusResponse: TrustedNetworkType =

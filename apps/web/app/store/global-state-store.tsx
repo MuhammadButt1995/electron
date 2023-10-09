@@ -4,7 +4,7 @@ import { shallow } from 'zustand/shallow';
 
 type OS = 'macos' | 'windows' | undefined;
 type InternetConnectionType = 'wifi' | 'ethernet' | undefined;
-export type TrustedNetworkType = 'VPN' | 'ZPA' | undefined;
+export type TrustedNetworkType = 'VPN' | 'ZPA' | 'DaaS' | undefined;
 
 type GlobalState = {
   os: OS;
