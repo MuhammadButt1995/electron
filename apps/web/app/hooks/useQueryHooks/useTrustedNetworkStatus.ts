@@ -47,7 +47,7 @@ export const useTrustedNetworkStatus = () => {
     refetchOnWindowFocus: true,
     useErrorBoundary: true,
     networkMode: 'always',
-    enabled: !isDaaSMachine,
+    enabled: isDaaSMachine === false,
   });
 
   const trustedNetworkStatusResponse: TrustedNetworkType =

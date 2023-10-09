@@ -30,7 +30,7 @@ export const useSSDHealth = () => {
     refetchOnWindowFocus: false,
     useErrorBoundary: true,
     networkMode: 'always',
-    enabled: !isDaaSMachine,
+    enabled: isDaaSMachine === false,
   });
 
   return SSDHealthQuery;
