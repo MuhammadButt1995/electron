@@ -28,11 +28,13 @@ const PasswordDataCard = () => {
     (state) => state.isOnTrustedNetwork
   );
 
+  const IS_DAAS = useGlobalStateStore((state) => state.isDaaSMachine);
+
   const IS_PASSWORD_DATA_LOADING =
     passwordDataQuery.isLoading || passwordDataQuery.isFetching;
 
   const IS_CONNECTED_AND_TRUSTED =
-    IS_CONNECTED_TO_INTERNET && IS_ON_TRUSTED_NETWORK;
+    IS_CONNECTED_TO_INTERNET && (IS_ON_TRUSTED_NETWORK || IS_DAAS);
   // const IS_CONNECTED_AND_TRUSTED = IS_CONNECTED_TO_INTERNET && true;
 
   const cardProps = {
