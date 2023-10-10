@@ -24,6 +24,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 
 const IdentityServicesTabPage = () => {
+  const isDaaSMachine = useGlobalStateStore((state) => state.isDaaSMachine);
   const onLinkClick = (event: any) => {
     event.preventDefault();
     window.meta.openLink('');
@@ -43,7 +44,7 @@ const IdentityServicesTabPage = () => {
   );
 
   const IS_CONNECTED_AND_TRUSTED =
-    IS_CONNECTED_TO_INTERNET && IS_ON_TRUSTED_NETWORK;
+    IS_CONNECTED_TO_INTERNET && (IS_ON_TRUSTED_NETWORK || isDaaSMachine);
 
   // const IS_CONNECTED_AND_TRUSTED = IS_CONNECTED_TO_INTERNET && true;
 
