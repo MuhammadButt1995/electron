@@ -39,7 +39,7 @@ const Fminfo = () => {
   );
 
   useEffect(() => {
-    const isOnDaas = window.meta.isOnDaas();
+    const isOnDaas = !window.meta.isOnDaas();
     updateIsDaaSMachine(isOnDaas);
 
     if (isOnDaas) {
@@ -92,20 +92,22 @@ const Fminfo = () => {
                   <TabButton name='Internet' allOk={internetStatus} />
                 </TabsTrigger>
 
-                {!isDaaSMachine && (
+                {isDaaSMachine === false && (
                   <TabsTrigger value='enterprise'>
                     <TabButton name='Enterprise' allOk={enterpriseStatus} />
                   </TabsTrigger>
                 )}
               </TabsList>
 
-              <div>
-                <TabsList className='grid grid-cols-1 w-fit'>
-                  <TabsTrigger value='health-hub'>
-                    <p>Network Health Hub</p>
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+              {isDaaSMachine === false && (
+                <div>
+                  <TabsList className='grid grid-cols-1 w-fit'>
+                    <TabsTrigger value='health-hub'>
+                      <p>Network Health Hub</p>
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+              )}
             </div>
 
             <ScrollArea className='h-[20.5rem] pr-4'>
@@ -117,9 +119,11 @@ const Fminfo = () => {
                 <EnterpriseTabPage />
               </TabsContent>
 
-              <TabsContent value='health-hub' className='pt-4'>
-                <NetworkHealthTabPage />
-              </TabsContent>
+              {isDaaSMachine === false && (
+                <TabsContent value='health-hub' className='pt-4'>
+                  <NetworkHealthTabPage />
+                </TabsContent>
+              )}
             </ScrollArea>
           </Tabs>
         </TabsContent>

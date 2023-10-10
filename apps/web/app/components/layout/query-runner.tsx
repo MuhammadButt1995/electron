@@ -52,6 +52,8 @@ export const QueryRunner = ({ children }: Props) => {
     (state) => state.isOnTrustedNetwork
   );
 
+  const isDaaS = useGlobalStateStore((state) => state.isDaaSMachine);
+
   const wifiQuery = useWiFiData();
   const networkQuery = useTrustedNetworkStatus();
   const adQuery = useADStatus();
@@ -64,11 +66,13 @@ export const QueryRunner = ({ children }: Props) => {
   useEffect(() => {
     if (wifiQuery?.data?.data?.rating === 'ok' && IS_CONNECTED_TO_INTERNET) {
       setInternetStatus(true);
+    } else if (IS_CONNECTED_TO_INTERNET && isDaaS) {
+      setInternetStatus(true);
     } else {
       setInternetStatus(false);
     }
 
-    if (networkQuery?.data?.data?.rating === 'ok') {
+    if (networkQuery?.data?.data?.rating === 'ok' || isDaaS) {
       setEnterpriseStatus(true);
     } else {
       setEnterpriseStatus(false);
@@ -93,8 +97,8 @@ export const QueryRunner = ({ children }: Props) => {
     if (
       diskQuery?.data?.data?.rating === 'ok' &&
       lastBootQuery?.data?.data?.rating === 'ok' &&
-      batteryHealthQuery?.data?.data.rating === 'ok' &&
-      SSDHealthQuery?.data?.data.rating === 'ok'
+      (batteryHealthQuery?.data?.data.rating === 'ok' || isDaaS) &&
+      (SSDHealthQuery?.data?.data.rating === 'ok' || isDaaS)
     ) {
       setDeviceStatus(true);
     } else {
@@ -118,6 +122,7 @@ export const QueryRunner = ({ children }: Props) => {
     setNetworkStatus,
     setIdentityServicesStatus,
     setDeviceStatus,
+    isDaaS,
   ]);
 
   return <>{children}</>;
